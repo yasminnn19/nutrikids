@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receitas - NutriKids</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #FFC107;
+            --accent-color: #FF5722;
+            --light-color: #F5F5F5;
+            --dark-color: #333;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-color);
+            background-color: #f9f9f9;
+        }
+        
+        .kids-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        .navbar-brand span {
+            color: var(--accent-color);
+        }
+        
+        .recipe-header {
+            background: linear-gradient(rgba(76, 175, 80, 0.8), rgba(76, 175, 80, 0.8)), 
+                        url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .recipe-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .filter-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filter-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 100%;
+            background-color: var(--secondary-color);
+        }
+        
+        .filter-tag {
+            display: inline-block;
+            padding: 8px 20px;
+            margin: 5px;
+            border-radius: 30px;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            border: 2px solid transparent;
+        }
+        
+        .filter-tag:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .filter-tag.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .filter-tag i {
+            margin-right: 8px;
+        }
+        
+        .recipe-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            margin-bottom: 30px;
+            height: 100%;
+            background-color: white;
+        }
+        
+        .recipe-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .recipe-img-container {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .recipe-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .recipe-card:hover .recipe-img {
+            transform: scale(1.1);
+        }
+        
+        .recipe-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .recipe-difficulty {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .difficulty-easy {
+            background-color: #E8F5E9;
+            color: #2E7D32;
+        }
+        
+        .difficulty-medium {
+            background-color: #FFF8E1;
+            color: #FF8F00;
+        }
+        
+        .difficulty-hard {
+            background-color: #FFEBEE;
+            color: #C62828;
+        }
+        
+        .recipe-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .recipe-meta i {
+            margin-right: 5px;
+            color: var(--primary-color);
+        }
+        
+        .submit-recipe {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+        }
+        
+        .submit-recipe:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.5);
+            color: white;
+        }
+        
+        .submit-recipe i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+        }
+        
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom: none;
+        }
+        
+        .modal-footer {
+            border-top: none;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+        }
+        
+        .allergy-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 15px;
+            margin: 5px;
+            border-radius: 30px;
+            background-color: #FFEBEE;
+            color: #C62828;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .allergy-chip i {
+            margin-right: 8px;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .recipe-title {
+                font-size: 2.2rem;
+            }
+            
+            .filter-tag {
+                padding: 6px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .submit-recipe {
+                padding: 12px 20px;
+                font-size: 1rem;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <span class="kids-font">Nutri</span>Kids
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/receita/">Receitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/forum/">Fórum</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/alergias/">Minhas Alergias</a>
+                    </li>
+                </ul>
+                <div class="ms-lg-3 mt-3 mt-lg-0">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>
+                            {% if user.is_authenticated %}
+                                {{ user.nome }}
+                            {% else %}
+                                Entrar
+                            {% endif %}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            {% if user.is_authenticated %}
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
+                                <li><a class="dropdown-item" href="/favoritos/"><i class="fas fa-heart me-2"></i>Favoritos</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout/"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="/login/"><i class="fas fa-sign-in-alt me-2"></i>Entrar</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Recipe Header -->
+    <header class="recipe-header">
+        <div class="container">
+            <h1 class="recipe-title kids-font">Receitas Seguras</h1>
+            <p class="lead">Encontre receitas deliciosas adaptadas para as necessidades do seu filho</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mb-5">
+        <!-- Filter Section -->
+        <section class="filter-section">
+            <div class="row align-items-center">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <h4 class="mb-0"><i class="fas fa-filter me-2"></i>Filtrar por:</h4>
+                </div>
+                <div class="col-md-9">
+                    <div class="d-flex flex-wrap">
+                        <span class="filter-tag active"><i class="fas fa-utensils"></i> Todas</span>
+                        <span class="filter-tag"><i class="fas fa-bread-slice"></i> Sem glúten</span>
+                        <span class="filter-tag"><i class="fas fa-wine-bottle"></i> Sem leite</span>
+                        <span class="filter-tag"><i class="fas fa-egg"></i> Sem ovos</span>
+                        <span class="filter-tag"><i class="fas fa-peanut"></i> Sem amendoim</span>
+                        <span class="filter-tag"><i class="fas fa-fish"></i> Sem frutos do mar</span>
+                        <span class="filter-tag"><i class="fas fa-seedling"></i> Veganas</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recipes Grid -->
+        <section>
+            <div class="row">
+                {% for receita in receitas %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="recipe-card">
+                        <div class="recipe-img-container">
+                            {% if receita.imagem %}
+                                <img src="{{ receita.imagem.url }}" class="recipe-img" alt="{{ receita.titulo }}">
+                            {% else %}
+                                <img src="https://assets.unileversolutions.com/recipes-v2/35815.jpg" class="recipe-img" alt="{{ receita.titulo }}">
+                            {% endif %}
+                            <span class="recipe-badge"><i class="fas fa-check-circle me-1"></i>{{ receita.categoria_receita.nome_categoria }}</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="recipe-difficulty difficulty-{{ receita.dificuldade }}">
+                                <i class="fas fa-star"></i> 
+                                {% if receita.dificuldade == 'facil' %}Fácil
+                                {% elif receita.dificuldade == 'medio' %}Médio
+                                {% else %}Difícil{% endif %}
+                            </span>
+                            <h4>{{ receita.titulo }}</h4>
+                            <p class="card-text">{{ receita.ingredientes|truncatewords:20 }}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="recipe-meta"><i class="fas fa-clock"></i> {{ receita.tempo_preparo }} min</span>
+                                <span class="recipe-meta"><i class="fas fa-utensils"></i> {{ receita.porcoes }} porções</span>
+                                <span class="recipe-meta"><i class="fas fa-heart"></i> 124</span>
+                            </div>
+                            <a href="/receita/{{ receita.idreceita }}/" class="btn btn-primary mt-2">Ver Receita</a>
+                            
+                            {% if user.is_authenticated %}
+                            <form action="/favoritos/toggle/{{ receita.idreceita }}/" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger mt-2">
+                                    <i class="fas fa-heart"></i> Favoritar
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Nenhuma receita encontrada. Seja o primeiro a publicar uma receita!
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Próxima</a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+    </main>
+
+    <!-- Submit Recipe Button -->
+    {% if user.is_authenticated %}
+    <button class="submit-recipe" data-bs-toggle="modal" data-bs-target="#submitRecipeModal">
+        <i class="fas fa-plus"></i> Publicar Receita
+    </button>
+    {% endif %}
+
+    <!-- Submit Recipe Modal -->
+    <div class="modal fade" id="submitRecipeModal" tabindex="-1" aria-labelledby="submitRecipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title kids-font" id="submitRecipeModalLabel">Compartilhe Sua Receita</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="recipeForm" method="post" action="/receita/criar/" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="recipeTitle" class="form-label">Título da Receita</label>
+                            <input type="text" class="form-control" id="recipeTitle" name="titulo" placeholder="Ex: Bolo de Cenoura Vegano" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="recipeDescription" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="recipeDescription" name="descricao" rows="3" placeholder="Descreva sua receita..." required></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="recipeTime" class="form-label">Tempo de Preparo (minutos)</label>
+                                <input type="number" class="form-control" id="recipeTime" name="tempo_preparo" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="recipeServings" class="form-label">Rendimento (porções)</label>
+                                <input type="number" class="form-control" id="recipeServings" name="porcoes" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="recipeDifficulty" class="form-label">Dificuldade</label>
+                            <select class="form-select" id="recipeDifficulty" name="dificuldade" required>
+                                <option value="" selected disabled>Selecione...</option>
+                                <option value="facil">Fácil</option>
+                                <option value="medio">Médio</option>
+                                <option value="dificil">Difícil</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="recipeCategory" class="form-label">Categoria</label>
+                            <select class="form-select" id="recipeCategory" name="categoria_receita" required>
+                                <option value="" selected disabled>Selecione uma categoria...</option>
+                                {% for categoria in categorias %}
+                                <option value="{{ categoria.idcategoria_receita }}">{{ categoria.nome_categoria }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="recipeIngredients" class="form-label">Ingredientes</label>
+                            <textarea class="form-control" id="recipeIngredients" name="ingredientes" rows="5" placeholder="Liste os ingredientes, um por linha:" required></textarea>
+                            <small class="text-muted">Ex: 2 xícaras de farinha de arroz</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="recipeInstructions" class="form-label">Modo de Preparo</label>
+                            <textarea class="form-control" id="recipeInstructions" name="modo_preparo" rows="5" placeholder="Descreva o passo a passo da receita:" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="recipeImage" class="form-label">Foto da Receita</label>
+                            <input class="form-control" type="file" id="recipeImage" name="imagem" accept="image/*">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="recipeForm" class="btn btn-primary">Enviar Receita</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h3 class="kids-font">NutriKids</h3>
+                    <p class="mt-3">Ajudando famílias a criarem refeições seguras e deliciosas para crianças com alergias alimentares.</p>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h5>Links Rápidos</h5>
+                    <div class="footer-links mt-3">
+                        <a href="/">Início</a>
+                        <a href="/receita/">Receitas</a>
+                        <a href="/forum/">Fórum</a>
+                        <a href="/alergias/">Minhas Alergias</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h5>Contato</h5>
+                    <div class="footer-links mt-3">
+                        <a href="#"><i class="fas fa-envelope me-2"></i>contato@nutrikids.com</a>
+                        <a href="#"><i class="fas fa-phone me-2"></i>(11) 98765-4321</a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4 bg-secondary">
+            <div class="text-center pt-3">
+                <p class="mb-0">&copy; 2023 NutriKids. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // Filter tags functionality
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tag').forEach(t => {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+                console.log('Filtrando por:', this.textContent.trim());
+            });
+        });
+        
+        // Recipe form submission
+        document.getElementById('recipeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('/receita/criar/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Receita criada com sucesso!');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('submitRecipeModal'));
+                    modal.hide();
+                    this.reset();
+                    location.reload();
+                } else {
+                    alert('Erro ao criar receita: ' + JSON.stringify(data.errors));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Erro ao criar receita.');
+            });
+        });
+        
+        // Animate recipe cards on scroll
+        const animateOnScroll = () => {
+            const recipeCards = document.querySelectorAll('.recipe-card');
+            
+            recipeCards.forEach((card, index) => {
+                const cardPosition = card.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if(cardPosition < screenPosition) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Set initial state for animation
+        window.addEventListener('load', () => {
+            const recipeCards = document.querySelectorAll('.recipe-card');
+            recipeCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `all 0.5s ease ${index * 0.1}s`;
+            });
+            
+            setTimeout(animateOnScroll, 500);
+        });
+        
+        window.addEventListener('scroll', animateOnScroll);
+    </script>
+</body>
+</html>

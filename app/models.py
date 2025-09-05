@@ -1,3 +1,168 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.utils import timezone
 
-# Create your models here.
+# Para JSONField - compatível com diferentes versões do Django
+try:
+    from django.db.models import JSONField
+except ImportError:
+    from django.contrib.postgres.fields import JSONField
+
+class UsuarioManager(BaseUserManager):
+    def create_user(self, email, nome, password=None, perfil='usuario'):
+        if not email:
+            raise ValueError('Usuários devem ter um endereço de email')
+        
+        usuario = self.model(
+            email=self.normalize_email(email),
+            nome=nome,
+            perfil=perfil
+        )
+        
+        usuario.set_password(password)
+        usuario.save(using=self._db)
+        return usuario
+    
+    def create_superuser(self, email, nome, password):
+        usuario = self.create_user(
+            email=email,
+            nome=nome,
+            password=password,
+            perfil='administrador'
+        )
+        usuario.is_staff = True
+        usuario.is_superuser = True
+        usuario.save(using=self._db)
+        return usuario
+
+class Usuario(AbstractBaseUser):
+    idusuario = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=100)
+    email = models.EmailField(max_length=150, unique=True)
+    perfil = models.CharField(max_length=45, default='usuario')
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    
+    objects = UsuarioManager()
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['nome']
+    
+    def __str__(self):
+        return self.nome
+    
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+    
+    def has_module_perms(self, app_label):
+        return self.is_superuser
+
+class Alergia(models.Model):
+    idalergia = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=45)
+    
+    def __str__(self):
+        return self.nome
+
+class AlergiaHasUsuario(models.Model):
+    idusuario_alergia = models.AutoField(primary_key=True)
+    alergia = models.ForeignKey(Alergia, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = (('alergia', 'usuario'),)
+    
+    def __str__(self):
+        return f"{self.usuario.nome} - {self.alergia.nome}"
+
+class CategoriaReceita(models.Model):
+    idcategoria_receita = models.AutoField(primary_key=True)
+    nome_categoria = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.nome_categoria
+
+# app/models.py
+class Receita(models.Model):
+    idreceita = models.AutoField(primary_key=True)
+    titulo = models.CharField(max_length=45)
+    modo_preparo = models.TextField(max_length=255)
+    ingredientes = models.TextField(max_length=255)
+    porcoes = models.IntegerField()
+    categoria_receita = models.ForeignKey(CategoriaReceita, on_delete=models.CASCADE)
+    imagem = models.ImageField(upload_to='receitas/', null=True, blank=True)  # NOVO CAMPO
+    tempo_preparo = models.IntegerField(default=0, help_text="Tempo em minutos")  # NOVO CAMPO
+    
+    def __str__(self):
+        return self.titulo
+
+class Ingrediente(models.Model):
+    idingrediente = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=100)
+    substituicoes_sugeridas = JSONField()
+    
+    def __str__(self):
+        return self.nome
+
+class ReceitaHasIngrediente(models.Model):
+    id_visualizar_ingrediente = models.AutoField(primary_key=True)
+    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
+    ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
+    quantidade = models.CharField(max_length=45)
+    unidade = models.CharField(max_length=45)
+    
+    class Meta:
+        unique_together = (('receita', 'ingrediente'),)
+    
+    def __str__(self):
+        return f"{self.receita.titulo} - {self.ingrediente.nome}"
+
+class Forum(models.Model):
+    idforum = models.AutoField(primary_key=True)
+    titulo = models.CharField(max_length=45)
+    enunciado = models.CharField(max_length=45)
+    data_inicio = models.CharField(max_length=45)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.titulo
+
+class Categoria(models.Model):
+    idcategoria = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=45)
+    
+    def __str__(self):
+        return self.nome
+
+class Topico(models.Model):
+    idtopico = models.AutoField(primary_key=True)
+    titulo = models.CharField(max_length=45)
+    enunciado = models.CharField(max_length=45)
+    data_inicio = models.CharField(max_length=45)
+    forum = models.ForeignKey(Forum, on_delete=models.CASCADE)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.titulo
+
+class Postagem(models.Model):
+    idpostagem = models.AutoField(primary_key=True)
+    texto = models.TextField(max_length=255)
+    data_publicacao = models.DateTimeField(default=timezone.now)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    topico = models.ForeignKey(Topico, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"Postagem {self.idpostagem} - {self.usuario.nome}"
+
+class Favorito(models.Model):
+    idfavorito = models.AutoField(primary_key=True)
+    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = (('receita', 'usuario'),)
+    
+    def __str__(self):
+        return f"{self.usuario.nome} - {self.receita.titulo}"
