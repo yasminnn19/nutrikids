@@ -2,28 +2,83 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout  # ADD logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages  # ADD messages
 from .models import *
-from .forms import ReceitaForm  # Vamos criar este formulário
+from .forms import ReceitaForm
 import json
 
 def index(request):
-    return render(request, 'index.html')
 
+    receitas = Receita.objects.all().order_by('-idreceita')[:6]
+    
+    # receitas = Receita.objects.all().order_by('?')[:6] --> aleatórias
+    
+    return render(request, 'index.html', {
+        'receitas': receitas
+    })
+
+def cadastro(request):
+    if request.method == 'POST':
+        # Receber dados do formulário
+        nome = request.POST.get('nome')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        
+        # Validações básicas
+        if password1 != password2:
+            return render(request, 'cadastro.html', {
+                'error': 'As senhas não coincidem.'
+            })
+        
+        if Usuario.objects.filter(email=email).exists():
+            return render(request, 'cadastro.html', {
+                'error': 'Este email já está cadastrado.'
+            })
+        
+        # Criar usuário
+        try:
+            user = Usuario.objects.create_user(
+                email=email,
+                nome=nome,
+                password=password1,
+                perfil='usuario'  # Perfil padrão
+            )
+            
+            # Login automático após cadastro
+            login(request, user)
+            return redirect('index')
+            
+        except Exception as e:
+            return render(request, 'cadastro.html', {
+                'error': 'Erro ao criar conta. Tente novamente.'
+            })
+    
+    else:
+        return render(request, 'cadastro.html')
+    
+# views.py - CORRIGIR a view login_view
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('index')
+        # CORREÇÃO: Usar request.POST diretamente
+        email = request.POST.get('username')  # O campo se chama 'username' no form
+        password = request.POST.get('password')
+        
+        # CORREÇÃO: Autenticar usando o email como username
+        user = authenticate(request, username=email, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return redirect('index')
+        else:
+            # Adicionar mensagem de erro
+            return render(request, 'login.html', {
+                'error': 'Email ou senha incorretos. Tente novamente.'
+            })
     else:
-        form = AuthenticationForm()
-    return render(request, 'registration/login.html', {'form': form})
+        return render(request, 'login.html')
 
 @login_required
 def receita_list(request):
@@ -43,19 +98,28 @@ def receita_detail(request, id):
         'ingredientes': ingredientes
     })
 
-@login_required
-def forum_list(request):
-    forums = Forum.objects.all()
-    return render(request, 'forum/list.html', {'forums': forums})
+def forum(request):
+    try:
+        # Verificar qual modelo existe e tem o campo data_inicio
+        if hasattr(Forum, 'data_inicio'):
+            topicos = Forum.objects.all().order_by('-data_inicio')
+        elif hasattr(Topico, 'data_inicio'):
+            topicos = Topico.objects.all().order_by('-data_inicio')
+        else:
+            # Se nenhum tiver data_inicio, ordenar por id ou outro campo
+            topicos = Forum.objects.all().order_by('-idforum')
+    except Exception as e:
+        # Em caso de erro, usar lista vazia
+        topicos = []
+        print(f"Erro ao carregar tópicos: {e}")
+    
+    context = {
+        'topicos': topicos,
+    }
+    return render(request, 'forum.html', context)
 
-@login_required
-def forum_detail(request, id):
-    forum = get_object_or_404(Forum, idforum=id)
-    topicos = Topico.objects.filter(forum=forum)
-    return render(request, 'forum/detail.html', {
-        'forum': forum,
-        'topicos': topicos
-    })
+
+
 
 @login_required
 def topico_detail(request, id):
@@ -82,25 +146,10 @@ def add_postagem(request, topico_id):
     
     return redirect('topico_detail', id=topico_id)
 
-@login_required
-def favoritos_list(request):
-    favoritos = Favorito.objects.filter(usuario=request.user)
-    return render(request, 'favoritos/list.html', {'favoritos': favoritos})
-
-@login_required
-@require_http_methods(["POST"])
-def toggle_favorito(request, receita_id):
-    receita = get_object_or_404(Receita, idreceita=receita_id)
-    favorito, created = Favorito.objects.get_or_create(
-        usuario=request.user,
-        receita=receita
-    )
-    
-    if not created:
-        favorito.delete()
-        return JsonResponse({'status': 'removed'})
-    
-    return JsonResponse({'status': 'added'})
+def custom_logout(request):
+    logout(request)
+    messages.success(request, 'Você foi desconectado com sucesso!')
+    return redirect('index') 
 
 @login_required
 def minhas_alergias(request):
@@ -110,6 +159,20 @@ def minhas_alergias(request):
         'alergias_usuario': alergias_usuario,
         'todas_alergias': alergias
     })
+
+@login_required
+def perfil(request):
+    return render(request, 'perfil.html')
+
+@login_required
+def perfil(request):
+    # Contexto com dados do usuário
+    context = {
+        'user': request.user,
+        'active_tab': 'perfil'  # Tab ativa por padrão
+    }
+    return render(request, 'perfil.html', context)
+
 
 @login_required
 @require_http_methods(["POST"])

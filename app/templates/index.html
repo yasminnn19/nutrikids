@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -10,294 +11,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #FFC107;
-            --accent-color: #FF5722;
-            --light-color: #F5F5F5;
-            --dark-color: #333;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--dark-color);
-            background-color: #f9f9f9;
-        }
-        
-        .kids-font {
-            font-family: 'Comic Neue', cursive;
-        }
-        
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: var(--primary-color);
-        }
-        
-        .navbar-brand span {
-            color: var(--accent-color);
-        }
-        
-        .hero-section {
-            background: linear-gradient(rgba(76, 175, 80, 0.8), rgba(76, 175, 80, 0.8)), 
-                        url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-attachment: scroll;
-            color: white;
-            text-align: center;
-            
-            /* Controle de altura responsivo */
-            height: 85vh;
-            min-height: 500px;
-            max-height: 800px;
-            
-            /* Flexbox para centralização */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            
-            /* Espaçamento interno */
-            padding: 2rem;
-            box-sizing: border-box;
-            
-            /* Melhoria na sobreposição do gradiente */
-            background-blend-mode: overlay;
-        }
-        
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-        }
-        
-        .hero-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-            max-width: 800px;
-            padding: 0 20px;
-        }
-        
-        .btn-primary {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-            padding: 12px 30px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background-color: #e64a19;
-            border-color: #e64a19;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .btn-outline-light {
-            padding: 12px 30px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-outline-light:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .feature-card {
-            border-radius: 15px;
-            overflow: hidden;
-            border: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            margin-bottom: 20px;
-            height: 100%;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-        
-        .section-title {
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 40px;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .section-title:after {
-            content: '';
-            position: absolute;
-            width: 50%;
-            height: 3px;
-            background-color: var(--secondary-color);
-            bottom: -10px;
-            left: 25%;
-        }
-        
-        .testimonial-card {
-            background-color: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .testimonial-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--secondary-color);
-        }
-        
-        .allergy-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            background-color: #FFEBEE;
-            color: #C62828;
-            border-radius: 20px;
-            margin: 5px;
-            font-weight: 600;
-        }
-        
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 50px 0 20px;
-        }
-        
-        .footer-links a {
-            color: #ccc;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
-        }
-        
-        .footer-links a:hover {
-            color: white;
-        }
-        
-        .social-icon {
-            color: white;
-            font-size: 1.5rem;
-            margin-right: 15px;
-        }
-        
-        .recipe-card {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            margin-bottom: 30px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .recipe-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-
-        .recipe-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 0.3s ease; 
-        }
-        
-        .recipe-card:hover .recipe-img {
-            transform: scale(1.05);
-        }
-        
-        .recipe-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--accent-color);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-        }
-        
-        .newsletter-input {
-            border-radius: 30px 0 0 30px;
-            border: none;
-            padding: 15px 20px;
-        }
-        
-        .newsletter-btn {
-            border-radius: 0 30px 30px 0;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 15px 25px;
-        }
-        
-        @media (max-width: 768px) {
-            .hero-section {
-                height: 75vh;
-                min-height: 400px;
-                padding: 1.5rem;
-            }
-            
-            .hero-title {
-                font-size: 2.5rem;
-                margin-bottom: 15px;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.2rem;
-                margin-bottom: 20px;
-            }
-            
-            .btn-primary,
-            .btn-outline-light {
-                padding: 10px 20px;
-                font-size: 1rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero-section {
-                height: 70vh;
-                min-height: 350px;
-            }
-            
-            .hero-title {
-                font-size: 2rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        {% if user.is_authenticated %}
+    <a href="{% url 'perfil' %}" class="nav-link">
+        <i class="fas fa-user"></i> Meu Perfil
+    </a>
+    {% endif %}
 </head>
 <body>
+    
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href="{% url 'index' %}">
                 <span class="kids-font">Nutri</span>Kids
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -306,38 +33,35 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">Início</a>
+                        <a class="nav-link active" href="{% url 'index' %}">Início</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/receita/">Receitas</a>
+                        <a class="nav-link" href="{% url 'receita_list' %}">Receitas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/forum/">Fórum</a>
+                        <a class="nav-link" href="{% url 'forum' %}">Fórum</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/alergias/">Minhas Alergias</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/favoritos/">Favoritos</a>
+                        <a class="nav-link" href=" /favoritos/ ">Favoritos</a>
                     </li>
                 </ul>
                 <div class="ms-lg-3 mt-3 mt-lg-0">
                     {% if user.is_authenticated %}
                         <div class="dropdown">
                             <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-1"></i>{{ user.nome }}
+                                <i class="fas fa-user-circle me-1"></i>{{ user.username }}
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
+                                <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
                                 <li><a class="dropdown-item" href="/favoritos/"><i class="fas fa-heart me-2"></i>Favoritos</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configurações</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/logout/"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
                             </ul>
                         </div>
                     {% else %}
-                        <a href="/login/" class="btn btn-outline-primary me-2">Login</a>
-                        <a href="/register/" class="btn btn-primary">Cadastre-se</a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
+                        <a href="{% url 'cadastro' %}" class="btn btn-primary">Cadastre-se</a>
                     {% endif %}
                 </div>
             </div>
@@ -348,12 +72,12 @@
     <section class="hero-section">
         <div class="container">
             <h1 class="hero-title kids-font">Receitas seguras para crianças com alergias</h1>
-            <p class="hero-subtitle">Encontre e compartilhe receitas deliciosas que eliminam os riscos para crianças com alergias alimentares</p>
+            <p class="hero-subtitle" >Encontre e compartilhe receitas deliciosas que eliminam os riscos para crianças com alergias alimentares</p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
                 {% if user.is_authenticated %}
-                    <a href="/receita/" class="btn btn-primary btn-lg">Explorar Receitas</a>
+                    <a href="{% url 'receita_list' %}" class="btn btn-primary btn-lg">Explorar Receitas</a>
                 {% else %}
-                    <a href="/register/" class="btn btn-primary btn-lg">Comece Agora</a>
+                    <a href="{% url 'cadastro' %}" class="btn btn-primary btn-lg">Comece Agora</a>
                     <a href="#features" class="btn btn-outline-light btn-lg">Saiba Mais</a>
                 {% endif %}
             </div>
@@ -432,19 +156,23 @@
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ receita.titulo }}</h5>
-                            <p class="card-text">{{ receita.ingredientes|truncatewords:15 }}</p>
+                            <p class="card-text">{{ receita.modo_preparo|truncatewords:15 }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span><i class="fas fa-clock me-2"></i>{{ receita.tempo_preparo }} min</span>
                                 <span><i class="fas fa-utensils me-2"></i>{{ receita.porcoes }} porções</span>
                             </div>
-                            <a href="/receita/{{ receita.idreceita }}/" class="btn btn-primary btn-sm mt-2">Ver Receita</a>
+                            <a href="{% url 'receita_detail' receita.idreceita %}" class="btn btn-primary btn-sm mt-2">Ver Receita</a>
                         </div>
                     </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p>Nenhuma receita disponível no momento.</p>
                 </div>
                 {% endfor %}
             </div>
             <div class="text-center mt-4">
-                <a href="/receita/" class="btn btn-primary">Ver Todas as Receitas</a>
+                <a href="{% url 'receita_list' %}" class="btn btn-primary">Ver Todas as Receitas</a>
             </div>
         </div>
     </section>
@@ -480,7 +208,7 @@
                 </div>
             </div>
             <div class="text-center mt-3">
-                <a href="/forum/" class="btn btn-primary">Participe do Nosso Fórum</a>
+                <a href="{% url 'forum' %}" class="btn btn-primary">Participe do Nosso Fórum</a>
             </div>
         </div>
     </section>
@@ -522,10 +250,9 @@
                 <div class="col-lg-2 col-md-4 mb-4">
                     <h5>Links Rápidos</h5>
                     <div class="footer-links mt-3">
-                        <a href="/">Início</a>
-                        <a href="/receita/">Receitas</a>
-                        <a href="/forum/">Fórum</a>
-                        <a href="/alergias/">Minhas Alergias</a>
+                        <a href="{% url 'index' %}">Início</a>
+                        <a href="{% url 'receita_list' %}">Receitas</a>
+                        <a href="{% url 'forum' %}">Fórum</a>
                         <a href="/favoritos/">Favoritos</a>
                     </div>
                 </div>
@@ -557,28 +284,6 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
-    <script>
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-        
-        // Newsletter form submission
-        document.querySelector('form')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value;
-            
-            // Here you would typically send the email to your server
-            // For now, we'll just show an alert
-            alert(`Obrigado por assinar nossa newsletter! Você receberá nossas receitas em ${email}`);
-            this.querySelector('input[type="email"]').value = '';
-        });
-    </script>
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

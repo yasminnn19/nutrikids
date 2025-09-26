@@ -1,0 +1,277 @@
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #FFC107;
+    --accent-color: #FF5722;
+    --light-color: #F5F5F5;
+    --dark-color: #333;
+}
+
+.forum-header {
+    background: linear-gradient(rgba(76, 175, 80, 0.8), rgba(76, 175, 80, 0.8)), 
+                url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.forum-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.topic-card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+    margin-bottom: 20px;
+    background-color: white;
+}
+
+.topic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.topic-badge {
+    background-color: var(--secondary-color);
+    color: var(--dark-color);
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    display: inline-block;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+}
+
+.comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-card {
+    border-left: 3px solid var(--primary-color);
+    background-color: white;
+    border-radius: 0 8px 8px 0;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.comment-form {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
+}
+
+.category-filter {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    border: 1px solid #e0e0e0;
+}
+
+.category-link {
+    display: block;
+    padding: 8px 15px;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.category-link:hover, 
+.category-link.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: var(--dark-color);
+}
+
+.topic-stats {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.topic-stats i {
+    margin-right: 5px;
+    color: var(--primary-color);
+}
+
+.section-title {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 3px;
+    background-color: var(--secondary-color);
+    bottom: -10px;
+    left: 25%;
+}
+
+/* Estilos específicos para o fórum */
+.forum-header .btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 30px;
+}
+
+.forum-header .btn-primary:hover {
+    background-color: #e64a19;
+    border-color: #e64a19;
+    transform: translateY(-2px);
+}
+
+/* Ajustes para mobile */
+@media (max-width: 768px) {
+    .forum-header {
+        padding: 60px 0;
+    }
+    
+    .forum-title {
+        font-size: 2rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 576px) {
+    .forum-header {
+        padding: 40px 0;
+    }
+    
+    .forum-title {
+        font-size: 1.8rem;
+    }
+    
+    .topic-stats {
+        font-size: 0.8rem;
+    }
+    
+    .topic-stats span {
+        display: block;
+        margin-bottom: 5px;
+    }
+}
+
+footer {
+    background-color: var(--dark-color);
+    color: white;
+    padding: 50px 0 20px;
+}
+
+.footer-links a {
+    color: #ccc;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+.social-icon {
+    color: white;
+    font-size: 1.5rem;
+    margin-right: 15px;
+}
+
+.recipe-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    margin-bottom: 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.recipe-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease; 
+}
+
+.recipe-card:hover .recipe-img {
+    transform: scale(1.05);
+}
+
+.recipe-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+}
+
+.newsletter-input {
+    border-radius: 30px 0 0 30px;
+    border: none;
+    padding: 15px 20px;
+}
+
+.newsletter-btn {
+    border-radius: 0 30px 30px 0;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+}

@@ -230,16 +230,16 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Início</a>
+                        <a class="nav-link active" href="{% url 'index' %}">Início</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="receitas.html">Receitas</a>
+                        <a class="nav-link" href="{% url 'receita_list' %}">Receitas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="forum.html">Fórum</a>
+                        <a class="nav-link" href="{% url 'forum' %}">Fórum</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="perfil.html">Meu Perfil</a>
+                        <a class="nav-link" href="/favoritos/">Favoritos</a>
                     </li>
                 </ul>
                 <div class="ms-lg-3 mt-3 mt-lg-0">

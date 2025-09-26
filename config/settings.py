@@ -117,3 +117,6 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+# Configurações de logout
+LOGOUT_REDIRECT_URL = '/'  # Redireciona para a página inicial após logout
