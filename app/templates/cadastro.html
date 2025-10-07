@@ -34,6 +34,25 @@
                                 <label for="password2" class="form-label">Confirmar Senha</label>
                                 <input type="password" class="form-control" id="password2" name="password2" required>
                             </div>
+            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Alergias Alimentares</label>
+                                <small class="text-muted d-block mb-2">Selecione as alergias que você ou sua criança possui:</small>
+                                
+                                <div class="row">
+                                    {% for alergia in todas_alergias %}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="alergias" value="{{ alergia.idalergia }}" id="alergia{{ alergia.idalergia }}">
+                                            <label class="form-check-label" for="alergia{{ alergia.idalergia }}">
+                                                <i class="fas fa-allergies text-warning me-1"></i>
+                                                {{ alergia.nome }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
                         </form>
                         

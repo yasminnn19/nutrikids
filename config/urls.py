@@ -10,6 +10,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),  # View personalizada
     path('', index, name='index'),
     path('cadastro/', cadastro, name='cadastro'),  # Adicionei também o cadastro
+    # path('receita/perfil', perfil, name='perfil'),
     path('receita/', receita_list, name='receita_list'),
     path('receita/<int:id>/', receita_detail, name='receita_detail'),
     path('receita/criar/', criar_receita, name='criar_receita'),
@@ -20,7 +21,8 @@ urlpatterns = [
     path('alergias/add/', add_alergia_usuario, name='add_alergia_usuario'),
     path('alergias/remove/<int:alergia_id>/', remove_alergia_usuario, name='remove_alergia_usuario'),
     path('logout/', custom_logout, name='logout'),
-    path('perfil/', views.perfil, name='perfil'),
+    path('perfil/', perfil, name='perfil'),
+    path('perfil/editar/', editar_perfil, name='editar_perfil'), 
 ]
 
 if settings.DEBUG:

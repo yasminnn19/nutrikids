@@ -8,6 +8,8 @@ from django.contrib import messages  # ADD messages
 from .models import *
 from .forms import ReceitaForm
 import json
+from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
 
@@ -26,16 +28,19 @@ def cadastro(request):
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
+        alergias_selecionadas = request.POST.getlist('alergias')  # Alergias selecionadas
         
         # Validações básicas
         if password1 != password2:
             return render(request, 'cadastro.html', {
-                'error': 'As senhas não coincidem.'
+                'error': 'As senhas não coincidem.',
+                'todas_alergias': Alergia.objects.all()
             })
         
         if Usuario.objects.filter(email=email).exists():
             return render(request, 'cadastro.html', {
-                'error': 'Este email já está cadastrado.'
+                'error': 'Este email já está cadastrado.',
+                'todas_alergias': Alergia.objects.all()
             })
         
         # Criar usuário
@@ -47,17 +52,26 @@ def cadastro(request):
                 perfil='usuario'  # Perfil padrão
             )
             
+            # Adicionar alergias selecionadas
+            for alergia_id in alergias_selecionadas:
+                alergia = Alergia.objects.get(idalergia=alergia_id)
+                AlergiaHasUsuario.objects.create(usuario=user, alergia=alergia)
+            
             # Login automático após cadastro
             login(request, user)
             return redirect('index')
             
         except Exception as e:
             return render(request, 'cadastro.html', {
-                'error': 'Erro ao criar conta. Tente novamente.'
+                'error': 'Erro ao criar conta. Tente novamente.',
+                'todas_alergias': Alergia.objects.all()
             })
     
     else:
-        return render(request, 'cadastro.html')
+        # GET request - mostrar formulário
+        return render(request, 'cadastro.html', {
+            'todas_alergias': Alergia.objects.all()
+        })
     
 # views.py - CORRIGIR a view login_view
 def login_view(request):
@@ -79,14 +93,65 @@ def login_view(request):
             })
     else:
         return render(request, 'login.html')
+    
+@login_required
+def editar_perfil(request):
+    usuario = request.user
+    todas_alergias = Alergia.objects.all()
+    alergias_usuario = AlergiaHasUsuario.objects.filter(usuario=usuario)
+    
+    if request.method == 'POST':
+        # Atualizar informações básicas
+        nome = request.POST.get('nome')
+        email = request.POST.get('email')
+        
+        if nome:
+            usuario.nome = nome
+        
+        # Verificar se email já existe (exceto para o próprio usuário)
+        if email and email != usuario.email:
+            if Usuario.objects.filter(email=email).exclude(idusuario=usuario.idusuario).exists():
+                messages.error(request, 'Este email já está em uso por outro usuário.')
+                return redirect('perfil')  # Redireciona para o perfil com mensagem de erro
+            else:
+                usuario.email = email
+        
+        # Atualizar alergias
+        alergias_selecionadas = request.POST.getlist('alergias')
+        
+        # Remover alergias existentes
+        alergias_usuario.delete()
+        
+        # Adicionar novas alergias selecionadas
+        for alergia_id in alergias_selecionadas:
+            alergia = Alergia.objects.get(idalergia=alergia_id)
+            AlergiaHasUsuario.objects.create(usuario=usuario, alergia=alergia)
+        
+        usuario.save()
+        messages.success(request, 'Perfil atualizado com sucesso!')
+        return redirect('perfil')  # Redireciona para o perfil com mensagem de sucesso
+    
+    context = {
+        'usuario': usuario,
+        'todas_alergias': todas_alergias,
+        'alergias_usuario': alergias_usuario,
+    }
+    return render(request, 'editar_perfil.html', context)
 
 @login_required
 def receita_list(request):
     receitas = Receita.objects.all()
     categorias = CategoriaReceita.objects.all()
+    
+    # Filtro por busca
+    busca = request.GET.get('busca')
+    if busca:
+        receitas = receitas.filter(titulo__icontains=busca)
+    
     return render(request, 'receita/list.html', {
         'receitas': receitas,
-        'categorias': categorias 
+        'categorias': categorias,
+        'termo_busca': busca  # Para mostrar o que foi buscado
     })
 
 @login_required
@@ -162,17 +227,16 @@ def minhas_alergias(request):
 
 @login_required
 def perfil(request):
-    return render(request, 'perfil.html')
-
-@login_required
-def perfil(request):
+    # Buscar alergias do usuário
+    alergias_usuario = AlergiaHasUsuario.objects.filter(usuario=request.user)
+    
     # Contexto com dados do usuário
     context = {
         'user': request.user,
-        'active_tab': 'perfil'  # Tab ativa por padrão
+        'alergias_usuario': alergias_usuario,
+        'active_tab': 'perfil'
     }
     return render(request, 'perfil.html', context)
-
 
 @login_required
 @require_http_methods(["POST"])

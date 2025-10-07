@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - NutriKids</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            color: #4CAF50 !important;
+            font-weight: bold;
+        }
+        
+        .alergia-checkbox {
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .alergia-checkbox:hover {
+            border-color: #007bff;
+            background-color: #f8f9fa;
+        }
+        
+        .alergia-checkbox.selected {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Simples -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="fas fa-apple-alt me-2"></i>NutriKids
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{% url 'perfil' %}">
+                    <i class="fas fa-arrow-left me-1"></i>Voltar ao Perfil
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Formulário de Edição -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0"><i class="fas fa-edit me-2"></i>Editar Informações</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <!-- Mensagens
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %} -->
+                            
+                            <!-- Informações Básicas -->
+                            <div class="mb-4">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-user me-2"></i>Informações Pessoais
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Nome completo:</label>
+                                    <input type="text" class="form-control form-control-lg" name="nome" 
+                                           value="{{ usuario.nome }}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Email:</label>
+                                    <input type="email" class="form-control form-control-lg" name="email" 
+                                           value="{{ usuario.email }}" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Alergias -->
+                            <div class="mb-4">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-allergies me-2"></i>Alergias Alimentares
+                                </h5>
+                                <p class="text-muted mb-3">Selecione as alergias que você ou sua criança possui:</p>
+                                
+                                <div class="row">
+                                    {% for alergia in todas_alergias %}
+                                    <div class="col-md-6 mb-2">
+                                        <label class="alergia-checkbox w-100 {% for au in alergias_usuario %}{% if au.alergia.idalergia == alergia.idalergia %}selected{% endif %}{% endfor %}">
+                                            <input type="checkbox" name="alergias" value="{{ alergia.idalergia }}" 
+                                                   {% for au in alergias_usuario %}{% if au.alergia.idalergia == alergia.idalergia %}checked{% endif %}{% endfor %}
+                                                   class="form-check-input me-2">
+                                            <i class="fas fa-allergies text-warning me-2"></i>
+                                            {{ alergia.nome }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <!-- Botões -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'perfil' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-2"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-save">
+                                    <i class="fas fa-save me-2"></i>Salvar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script para estilizar checkboxes -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[name="alergias"]');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const label = this.closest('.alergia-checkbox');
+                    if (this.checked) {
+                        label.classList.add('selected');
+                    } else {
+                        label.classList.remove('selected');
+                    }
+                });
+                
+                // Inicializar estado dos checkboxes
+                if (checkbox.checked) {
+                    checkbox.closest('.alergia-checkbox').classList.add('selected');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

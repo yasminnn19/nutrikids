@@ -2,11 +2,40 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 
-# Para JSONField - compatível com diferentes versões do Django
-try:
-    from django.db.models import JSONField
-except ImportError:
-    from django.contrib.postgres.fields import JSONField
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.utils import timezone
+
+# Para JSONField - compatível com todas as bases de dados
+if hasattr(models, 'JSONField'):
+    # Django 3.1+ tem JSONField nativo
+    JSONField = models.JSONField
+else:
+    # Fallback para versões mais antigas ou outros bancos
+    try:
+        from django.contrib.postgres.fields import JSONField
+    except ImportError:
+        # Fallback para SQLite e outros bancos
+        from django.db.models import TextField
+        class JSONField(TextField):
+            """Simula JSONField para bancos que não suportam JSON nativo"""
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+            
+            def from_db_value(self, value, expression, connection):
+                import json
+                if value is None:
+                    return value
+                try:
+                    return json.loads(value)
+                except (json.JSONDecodeError, TypeError):
+                    return value
+            
+            def get_prep_value(self, value):
+                import json
+                if value is None:
+                    return value
+                return json.dumps(value)
 
 class Alergia(models.Model):
     idalergia = models.AutoField(primary_key=True)

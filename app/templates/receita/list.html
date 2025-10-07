@@ -14,6 +14,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{%static 'css/forum.css' %}"">
     <style>
+                /* .clear-search-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.5);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        } */
         :root {
             --primary-color: #4CAF50;
             --secondary-color: #FFC107;
@@ -319,7 +328,7 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             {% if user.is_authenticated %}
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
+                                <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
                                 <li><a class="dropdown-item" href="/favoritos/"><i class="fas fa-heart me-2"></i>Favoritos</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configurações</a></li>
                                 <li><hr class="dropdown-divider"></li>
@@ -344,21 +353,74 @@
 
     <!-- Main Content -->
     <main class="container mb-5">
-        <!-- Filter Section -->
+
+                     <!-- Filter Section -->
         <section class="filter-section">
             <div class="row align-items-center">
-                <div class="col-md-3 mb-3 mb-md-0">
-                    <h4 class="mb-0"><i class="fas fa-filter me-2"></i>Filtrar por:</h4>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h4 class="mb-0"><i class="fas fa-search me-2"></i>Buscar Receitas</h4>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <form method="get" class="d-flex me-2" style="flex: 1; max-width: 500px;">
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="busca" 
+                                       placeholder="Digite o nome da receita..." 
+                                       value="{{ termo_busca|default:'' }}"
+                                       style="border-radius: 25px; padding: 12px 20px; border: 2px solid #4CAF50;">
+                                <button class="btn btn-primary" 
+                                        type="submit"
+                                        style="border-radius: 0 25px 25px 0; margin-left: -40px; padding: 0 20px; border: 2px solid #4CAF50; border-left: none;">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        
+                        {% if termo_busca %}
+                        <a href="{% url 'receita_list' %}" 
+                           class="btn btn-danger rounded-circle" 
+                           style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin-left: 10px; box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);">
+                           <i class="fas fa-times"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mostrar resultados da busca -->
+            {% if termo_busca %}
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="alert alert-info d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-info-circle me-2"></i>
+                            {% if receitas %}
+                                Mostrando {{ receitas.count }} resultado(s) para: <strong>"{{ termo_busca }}"</strong>
+                            {% else %}
+                                Nenhuma receita encontrada para: <strong>"{{ termo_busca }}"</strong>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'receita_list' %}" class="btn btn-sm btn-outline-info">
+                            <i class="fas fa-times me-1"></i>Limpar busca
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Filtros Rápidos (opcionais) -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h6 class="mb-2"><i class="fas fa-bolt me-2"></i>Buscar Rápido:</h6>
                     <div class="d-flex flex-wrap">
-                        <span class="filter-tag active"><i class="fas fa-utensils"></i> Todas</span>
-                        <span class="filter-tag"><i class="fas fa-bread-slice"></i> Sem glúten</span>
-                        <span class="filter-tag"><i class="fas fa-wine-bottle"></i> Sem leite</span>
-                        <span class="filter-tag"><i class="fas fa-egg"></i> Sem ovos</span>
-                        <span class="filter-tag"><i class="fas fa-peanut"></i> Sem amendoim</span>
-                        <span class="filter-tag"><i class="fas fa-fish"></i> Sem frutos do mar</span>
-                        <span class="filter-tag"><i class="fas fa-seedling"></i> Veganas</span>
+                        <a href="?busca=bolo" class="filter-tag"><i class="fas fa-birthday-cake"></i> Bolos</a>
+                        <a href="?busca=sopa" class="filter-tag"><i class="fas fa-utensil-spoon"></i> Sopas</a>
+                        <a href="?busca=salada" class="filter-tag"><i class="fas fa-leaf"></i> Saladas</a>
+                        <a href="?busca=frango" class="filter-tag"><i class="fas fa-drumstick-bite"></i> Frango</a>
+                        <a href="?busca=vegano" class="filter-tag"><i class="fas fa-seedling"></i> Vegano</a>
+                        <a href="?busca=sobremesa" class="filter-tag"><i class="fas fa-ice-cream"></i> Sobremesas</a>
                     </div>
                 </div>
             </div>
@@ -408,7 +470,7 @@
             </div>
             
             <!-- Pagination -->
-            <nav aria-label="Page navigation">
+            <!-- <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item disabled">
                         <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
@@ -420,7 +482,7 @@
                         <a class="page-link" href="#">Próxima</a>
                     </li>
                 </ul>
-            </nav>
+            </nav> -->
         </section>
     </main>
 
@@ -545,16 +607,32 @@
     <!-- Custom JS -->
     <script>
         // Filter tags functionality
-        document.querySelectorAll('.filter-tag').forEach(tag => {
-            tag.addEventListener('click', function() {
-                document.querySelectorAll('.filter-tag').forEach(t => {
-                    t.classList.remove('active');
-                });
-                this.classList.add('active');
-                console.log('Filtrando por:', this.textContent.trim());
-            });
+
+    // Busca em tempo real (opcional)
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[name="busca"]');
+        const searchForm = document.querySelector('form[method="get"]');
+        
+        // Auto-submit após 1 segundo sem digitar (opcional)
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                if (this.value.length >= 3 || this.value.length === 0) {
+                    searchForm.submit();
+                }
+            }, 1000);
         });
         
+        // Limpar busca
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = this.href;
+            });
+        });
+    });
+
         // Recipe form submission
         document.getElementById('recipeForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -615,5 +693,6 @@
         
         window.addEventListener('scroll', animateOnScroll);
     </script>
+    
 </body>
 </html>
