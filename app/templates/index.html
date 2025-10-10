@@ -13,11 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-        {% if user.is_authenticated %}
-    <a href="{% url 'perfil' %}" class="nav-link">
-        <i class="fas fa-user"></i> Meu Perfil
-    </a>
-    {% endif %}
 </head>
 <body>
     
@@ -31,7 +26,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav" style="flex: 1; display: flex; justify-content: flex-end;">
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'index' %}">Início</a>
                     </li>
@@ -42,19 +37,23 @@
                         <a class="nav-link" href="{% url 'forum' %}">Fórum</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href=" /favoritos/ ">Favoritos</a>
+                        <a class="nav-link" href="/favoritos/">Favoritos</a>
                     </li>
                 </ul>
                 <div class="ms-lg-3 mt-3 mt-lg-0">
                     {% if user.is_authenticated %}
                         <div class="dropdown">
                             <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-1"></i>{{ user.username }}
+                                <i class="fas fa-user-circle me-2"></i>
+                                {% if user.nome %}
+                                    {{ user.nome }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
                                 <li><a class="dropdown-item" href="/favoritos/"><i class="fas fa-heart me-2"></i>Favoritos</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configurações</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
                             </ul>
@@ -72,7 +71,7 @@
     <section class="hero-section">
         <div class="container">
             <h1 class="hero-title kids-font">Receitas seguras para crianças com alergias</h1>
-            <p class="hero-subtitle" >Encontre e compartilhe receitas deliciosas que eliminam os riscos para crianças com alergias alimentares</p>
+            <p class="hero-subtitle">Encontre e compartilhe receitas deliciosas que eliminam os riscos para crianças com alergias alimentares</p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
                 {% if user.is_authenticated %}
                     <a href="{% url 'receita_list' %}" class="btn btn-primary btn-lg">Explorar Receitas</a>

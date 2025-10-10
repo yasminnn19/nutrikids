@@ -11,6 +11,7 @@ import json
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
 def index(request):
 
     receitas = Receita.objects.all().order_by('-idreceita')[:6]
@@ -164,32 +165,91 @@ def receita_detail(request, id):
     })
 
 def forum(request):
-    try:
-        # Verificar qual modelo existe e tem o campo data_inicio
-        if hasattr(Forum, 'data_inicio'):
-            topicos = Forum.objects.all().order_by('-data_inicio')
-        elif hasattr(Topico, 'data_inicio'):
-            topicos = Topico.objects.all().order_by('-data_inicio')
-        else:
-            # Se nenhum tiver data_inicio, ordenar por id ou outro campo
-            topicos = Forum.objects.all().order_by('-idforum')
-    except Exception as e:
-        # Em caso de erro, usar lista vazia
-        topicos = []
-        print(f"Erro ao carregar tópicos: {e}")
+
+    topicos = Topico.objects.select_related('usuario', 'categoria').all()
     
-    context = {
-        'topicos': topicos,
-    }
-    return render(request, 'forum.html', context)
-
-
-
+    try:
+        # Verificar se existem categorias, se não, criar algumas padrão
+        if not Categoria.objects.exists():
+            categorias_padrao = [
+                'Dúvidas Gerais',
+                'Alergia a Leite', 
+                'Alergia a Ovos',
+                'Alergia a Amendoim',
+                'Alergia a Trigo',
+                'Dicas de Nutrição',
+                'Eventos'
+            ]
+            for nome in categorias_padrao:
+                Categoria.objects.create(nome=nome)
+        
+        # Buscar tópicos - com filtros
+        categoria_id = request.GET.get('categoria')
+        busca = request.GET.get('busca', '')
+        ordenar = request.GET.get('ordenar', 'recentes')
+        
+        # Query base
+        topicos = Topico.objects.all()
+        
+        # Filtro por categoria
+        if categoria_id:
+            topicos = topicos.filter(categoria_id=categoria_id)
+            categoria_selecionada = Categoria.objects.get(idcategoria=categoria_id)
+        else:
+            categoria_selecionada = None
+        
+        # Filtro por busca
+        if busca:
+            topicos = topicos.filter(titulo__icontains=busca)
+        
+        # Ordenação
+        if ordenar == 'antigos':
+            topicos = topicos.order_by('idtopico')
+        elif ordenar == 'comentados':
+            # Ordenar por número de comentários (mais comentados primeiro)
+            topicos = topicos.annotate(num_comentarios=models.Count('postagem')).order_by('-num_comentarios')
+        else:  # recentes (padrão)
+            topicos = topicos.order_by('-idtopico')
+        
+        categorias = Categoria.objects.all()
+        
+        context = {
+            'topicos': topicos,
+            'categorias': categorias,
+            'categoria_selecionada': categoria_selecionada,
+            'termo_busca': busca,
+            'ordenacao_selecionada': ordenar,
+        }
+        return render(request, 'forum.html', context)
+        
+    except Exception as e:
+        print(f"Erro na view forum: {e}")
+        # Fallback seguro
+        context = {
+            'topicos': [],
+            'categorias': Categoria.objects.all(),
+            'categoria_selecionada': None,
+            'termo_busca': '',
+            'ordenacao_selecionada': 'recentes',
+        }
+        return render(request, 'forum.html', context)
 
 @login_required
 def topico_detail(request, id):
     topico = get_object_or_404(Topico, idtopico=id)
-    postagens = Postagem.objects.filter(topico=topico)
+    postagens = Postagem.objects.filter(topico=topico).order_by('data_publicacao')
+    
+    if request.method == 'POST':
+        texto = request.POST.get('texto')
+        if texto:
+            Postagem.objects.create(
+                texto=texto,
+                usuario=request.user,
+                topico=topico
+            )
+            messages.success(request, 'Resposta publicada com sucesso!')
+            return redirect('topico_detail', id=id)
+    
     return render(request, 'topico/detail.html', {
         'topico': topico,
         'postagens': postagens
@@ -276,3 +336,48 @@ def criar_receita(request):
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'message': 'Método não permitido'})
+
+@login_required
+def criar_topico(request):
+    if request.method == 'POST':
+        titulo = request.POST.get('titulo')
+        categoria_id = request.POST.get('categoria')
+        conteudo = request.POST.get('conteudo')
+        
+        if titulo and categoria_id and conteudo:
+            try:
+                # Verificar se existe um fórum padrão
+                forum_padrao = Forum.objects.first()
+                if not forum_padrao:
+                    forum_padrao = Forum.objects.create(
+                        titulo="Fórum Principal",
+                        enunciado="Discussões gerais sobre alergias alimentares",
+                        data_inicio=timezone.now().strftime("%Y-%m-%d"),
+                        usuario=request.user
+                    )
+                
+                categoria = Categoria.objects.get(idcategoria=categoria_id)
+                
+                # Criar o tópico
+                topico = Topico.objects.create(
+                    titulo=titulo[:100],  # Limita a 100 caracteres
+                    enunciado=conteudo,   # Agora aceita texto longo
+                    data_inicio=timezone.now().strftime("%Y-%m-%d"),
+                    forum=forum_padrao,
+                    categoria=categoria,
+                    usuario=request.user
+                )
+                
+                messages.success(request, 'Tópico criado com sucesso!')
+                return redirect('forum')
+                
+            except Exception as e:
+                messages.error(request, f'Erro ao criar tópico: {str(e)}')
+                # Redireciona de volta para o fórum mantendo os filtros
+                return redirect('forum')
+        else:
+            messages.error(request, 'Preencha todos os campos obrigatórios.')
+            return redirect('forum')
+    
+    # Se for GET, redireciona para o fórum
+    return redirect('forum')

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ topico.titulo }} - NutriKids</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+                :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #FFC107;
+            --accent-color: #FF5722;
+            --light-color: #F5F5F5;
+            --dark-color: #333;
+            --text-color: #444;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f9f9f9 0%, #e8f5e8 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .kids-font {
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .navbar-brand span {
+            color: var(--accent-color);
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--dark-color);
+        }
+
+        .topic-header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.1);
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 25px;
+        }
+
+        .topic-badge {
+            background: linear-gradient(45deg, var(--secondary-color), #FFD54F);
+            color: var(--dark-color);
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(255, 193, 7, 0.3);
+        }
+
+        .topic-title {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin: 15px 0;
+            line-height: 1.3;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), #66BB6A);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            border: 3px solid white;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+        }
+
+        .user-info {
+            margin-left: 15px;
+        }
+
+        .user-name {
+            color: var(--dark-color);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .topic-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .topic-content {
+            background: var(--light-color);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 3px solid var(--accent-color);
+            margin: 20px 0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .stats-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .back-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: 25px;
+            background: white;
+        }
+
+        .back-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            bottom: 0;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .comment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--secondary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .comment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .comment-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-color), #FF8A65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+        }
+
+        .comment-form {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.1);
+            border: 2px solid var(--light-color);
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-color), #FF8A65);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(255, 87, 34, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
+            background: linear-gradient(45deg, #E64A19, var(--accent-color));
+        }
+
+        .alert-info {
+            background: linear-gradient(45deg, #E3F2FD, #BBDEFB);
+            border: none;
+            border-radius: 10px;
+            border-left: 4px solid #2196F3;
+            color: #1565C0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--dark-color), #222);
+            color: white;
+            padding: 30px 0 20px;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .topic-header {
+                padding: 20px;
+            }
+            
+            .comment-form {
+                padding: 20px;
+            }
+            
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (igual ao forum.html) -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <span style="font-family: 'Comic Neue', cursive;">Nutri</span>Kids
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'receita_list' %}">Receitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'forum' %}">Fórum</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container my-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Início</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'forum' %}">Fórum</a></li>
+                <li class="breadcrumb-item active">{{ topico.titulo|truncatewords:5 }}</li>
+            </ol>
+        </nav>
+
+        <!-- Mensagens -->
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show"
+            role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- Tópico Principal -->
+        <div class="topic-header">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <span class="topic-badge">{{ topico.categoria.nome }}</span>
+                    <h1 class="h2 mt-2">{{ topico.titulo }}</h1>
+                </div>
+                <a href="{% url 'forum' %}" class="back-link">
+                    <i class="fas fa-arrow-left me-1"></i>Voltar ao Fórum
+                </a>
+            </div>
+
+            <div class="d-flex align-items-center mb-4">
+                <div class="user-avatar me-3">
+                    {% if topico.usuario %}
+                        {{ topico.usuario.nome.0 }}
+                    {% else %}
+                        A
+                    {% endif %}
+                </div>
+                <div>
+                    <strong>
+                        {% if topico.usuario %}
+                            {{ topico.usuario.nome }}
+                        {% else %}
+                            Autor
+                        {% endif %}
+                    </strong>
+                    <div class="text-muted small">
+                        <i class="fas fa-clock me-1"></i>{{ topico.data_inicio }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="topic-content">
+                <p class="lead">{{ topico.enunciado }}</p>
+            </div>
+
+            <div class="topic-stats mt-3 pt-3 border-top">
+                <small class="text-muted">
+                    <i class="fas fa-comment me-1"></i>
+                    {{ postagens.count }} resposta{{ postagens.count|pluralize }}
+                </small>
+            </div>
+        </div>
+
+        <!-- Respostas -->
+        <div class="mb-4">
+            <h3 class="h4 mb-3">
+                Respostas 
+                <span class="badge bg-primary">{{ postagens.count }}</span>
+            </h3>
+
+            {% for postagem in postagens %}
+            <div class="comment-card">
+                <div class="d-flex align-items-start">
+                    <div class="user-avatar me-3">
+                        {% if postagem.usuario %}
+                            {{ postagem.usuario.nome.0 }}
+                        {% else %}
+                            U
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong>
+                                {% if postagem.usuario %}
+                                    {{ postagem.usuario.nome }}
+                                {% else %}
+                                    Usuário
+                                {% endif %}
+                            </strong>
+                            <small class="text-muted">
+                                {{ postagem.data_publicacao|date:"d/m/Y H:i" }}
+                            </small>
+                        </div>
+                        <p class="mb-0">{{ postagem.texto }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Seja o primeiro a responder este tópico!
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Formulário de Resposta -->
+        <div class="comment-form">
+            <h4 class="mb-3">Deixe sua resposta</h4>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <textarea class="form-control" name="texto" rows="4" 
+                              placeholder="Compartilhe sua experiência, dica ou resposta..."
+                              required></textarea>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        Sua resposta será publicada com seu nome de usuário
+                    </small>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-1"></i>Publicar Resposta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer (similar ao forum.html) -->
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p>&copy; 2023 NutriKids. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

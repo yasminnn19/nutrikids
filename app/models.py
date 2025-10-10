@@ -82,8 +82,8 @@ class Favorito(models.Model):
 
 class Forum(models.Model):
     idforum = models.AutoField(primary_key=True)
-    titulo = models.CharField(max_length=45)
-    enunciado = models.CharField(max_length=45)
+    titulo = models.CharField(max_length=100)
+    enunciado = models.TextField()
     data_inicio = models.CharField(max_length=45)
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
     
@@ -136,12 +136,13 @@ class ReceitaHasIngrediente(models.Model):
 
 class Topico(models.Model):
     idtopico = models.AutoField(primary_key=True)
-    titulo = models.CharField(max_length=45)
-    enunciado = models.CharField(max_length=45)
+    titulo = models.CharField(max_length=100)
+    enunciado = models.TextField()
     data_inicio = models.CharField(max_length=45)
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-    
+    usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, null=True, blank=True)
+
     def __str__(self):
         return self.titulo
 

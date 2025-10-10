@@ -3,14 +3,13 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from app.views import *
+from app.views import *  # ← IMPORTE DO APP FORUM
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', login_view, name='login'),  # View personalizada
+    path('login/', login_view, name='login'),
     path('', index, name='index'),
-    path('cadastro/', cadastro, name='cadastro'),  # Adicionei também o cadastro
-    # path('receita/perfil', perfil, name='perfil'),
+    path('cadastro/', cadastro, name='cadastro'),
     path('receita/', receita_list, name='receita_list'),
     path('receita/<int:id>/', receita_detail, name='receita_detail'),
     path('receita/criar/', criar_receita, name='criar_receita'),
@@ -23,6 +22,8 @@ urlpatterns = [
     path('logout/', custom_logout, name='logout'),
     path('perfil/', perfil, name='perfil'),
     path('perfil/editar/', editar_perfil, name='editar_perfil'), 
+    path('forum/criar/', criar_topico, name='criar_topico'),
+    # REMOVA esta linha duplicada: path('forum/topico/<int:id>/', views.topico_detail, name='topico_detail'),
 ]
 
 if settings.DEBUG:
