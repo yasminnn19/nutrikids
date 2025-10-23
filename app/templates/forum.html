@@ -1,563 +1,329 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fórum NutriKids - Compartilhando experiências sobre alergias alimentares</title>
-    <!-- Bootstrap CSS -->
+    <title>Fórum - NutriKids</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap"
-        rel="stylesheet">
     <style>
         :root {
             --primary-color: #4CAF50;
-            --secondary-color: #FFC107;
-            --accent-color: #FF5722;
-            --light-color: #F5F5F5;
-            --dark-color: #333;
+            --secondary-color: #8fbc8f;
+            --accent-color: #f5f5dc;
+            --text-color: #333;
+            --light-color: #f8f9fa;
         }
-
+        
         body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--dark-color);
-            background-color: #f9f9f9;
+            background-color: #f5f5f5;
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        .kids-font {
-            font-family: 'Comic Neue', cursive;
+        
+        .navbar {
+            background-color: var(--primary-color);
         }
-
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: var(--primary-color);
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
-
-        .navbar-brand span {
-            color: var(--accent-color);
+        
+        .btn-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
         }
-
-        .forum-header {
-            background: linear-gradient(rgba(76, 175, 80, 0.8), rgba(76, 175, 80, 0.8)), url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .topic-card {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .badge-green {
+            background-color: var(--secondary-color);
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');
             background-size: cover;
             background-position: center;
             color: white;
-            padding: 80px 0;
-            text-align: center;
-            margin-bottom: 40px;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
         }
-
-        .forum-title {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-            padding: 10px 25px;
-            font-weight: 600;
-        }
-
-        .btn-primary:hover {
-            background-color: #e64a19;
-            border-color: #e64a19;
-        }
-
-        .topic-card {
-            border-radius: 10px;
-            overflow: hidden;
-            border: none;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-            margin-bottom: 20px;
-        }
-
-        .topic-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .topic-badge {
-            background-color: var(--secondary-color);
-            color: var(--dark-color);
-            font-weight: 600;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-color);
-        }
-
-        .comment-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .comment-card {
-            border-left: 3px solid var(--primary-color);
-            background-color: white;
-            border-radius: 0 8px 8px 0;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .comment-form {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .category-filter {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .category-link {
-            display: block;
-            padding: 8px 15px;
-            margin-bottom: 5px;
-            color: var(--dark-color);
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        .category-link:hover,
-        .category-link.active {
+        
+        .footer {
             background-color: var(--primary-color);
             color: white;
         }
 
-        .section-title {
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
+        .select-multiple {
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
         }
 
-        .section-title:after {
-            content: '';
-            position: absolute;
-            width: 50%;
-            height: 3px;
-            background-color: var(--secondary-color);
-            bottom: -10px;
-            left: 25%;
-        }
-
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 50px 0 20px;
-            margin-top: 50px;
-        }
-
-        .footer-links a {
-            color: #ccc;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .footer-links a:hover {
-            color: white;
-        }
-
-        .social-icon {
-            color: white;
-            font-size: 1.5rem;
-            margin-right: 15px;
-        }
-
-        .breadcrumb {
-            background-color: transparent;
-            padding: 0;
-        }
-
-        .breadcrumb-item a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        .breadcrumb-item.active {
-            color: var(--dark-color);
-        }
-
-        .topic-stats {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .topic-stats i {
-            margin-right: 5px;
-            color: var(--primary-color);
-        }
-
-        @media (max-width: 768px) {
-            .forum-title {
-                font-size: 2rem;
-            }
+        .select-multiple:focus {
+            border-color: #45a049;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
         }
     </style>
 </head>
-
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'index' %}">
-                <span class="kids-font">Nutri</span>Kids
+                <i class="fas fa-apple-alt me-2"></i>NutriKids
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'index' %}">Início</a>
+                        <a class="nav-link" href="{% url 'index' %}">Início</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'receita_list' %}">Receitas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'forum' %}">Fórum</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/favoritos/">Favoritos</a>
+                        <a class="nav-link active" href="{% url 'forum' %}">Fórum</a>
                     </li>
                 </ul>
-                <div class="ms-lg-3 mt-3 mt-lg-0">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle me-1"></i>
-                            {% if user.is_authenticated %}
-                            {{ user.nome }}
-                            {% else %}
-                            Maria Silva
-                            {% endif %}
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="fas fa-user me-2"></i>Meu
-                                    Perfil</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-utensils me-2"></i>Minhas
-                                    Receitas</a></li>
-                            <li><a class="dropdown-item" href="{% url 'minhas_alergias' %}"><i
-                                        class="fas fa-allergies me-2"></i>Minhas Alergias</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configurações</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i
-                                        class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
-                        </ul>
-                    </div>
+                <div class="d-flex">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'perfil' %}" class="btn btn-outline-light me-2">
+                        <i class="fas fa-user me-1"></i> Perfil
+                    </a>
+                    <a href="#new-topic" class="btn btn-light">
+                        <i class="fas fa-plus me-1"></i> Novo Tópico
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Login</a>
+                    <a href="{% url 'cadastro' %}" class="btn btn-light">Cadastrar</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Forum Header -->
-    <header class="forum-header">
-        <div class="container">
-            <h1 class="forum-title kids-font">Fórum NutriKids</h1>
-            <p class="lead">Compartilhe experiências, tire dúvidas e conecte-se com outras famílias</p>
-            <a href="#new-topic" class="btn btn-primary btn-lg mt-3"><i class="fas fa-plus me-2"></i>Novo Tópico</a>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold">Fórum NutriKids</h1>
+            <p class="lead">Compartilhe experiências, tire dúvidas e conecte-se com outras famílias sobre alergias alimentares</p>
         </div>
-    </header>
+    </div>
 
     <!-- Main Content -->
-    <main class="container">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Início</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Fórum</li>
-            </ol>
-        </nav>
-
+    <div class="container mb-5">
         <div class="row">
-            <!-- Sidebar with Categories -->
+            <!-- Sidebar -->
             <div class="col-lg-3 mb-4">
-                <div class="category-filter">
-                    <h3 class="section-title">Categorias</h3>
-                    <a href="{% url 'forum' %}?{% if termo_busca %}busca={{ termo_busca }}&{% endif %}{% if ordenacao_selecionada %}ordenar={{ ordenacao_selecionada }}{% endif %}"
-                        class="category-link {% if not categoria_selecionada %}active{% endif %}">
-                        Todos os tópicos
-                    </a>
-                    {% for categoria in categorias %}
-                    <a href="{% url 'forum' %}?categoria={{ categoria.idcategoria }}{% if termo_busca %}&busca={{ termo_busca }}{% endif %}{% if ordenacao_selecionada %}&ordenar={{ ordenacao_selecionada }}{% endif %}"
-                        class="category-link {% if categoria_selecionada and categoria_selecionada.idcategoria == categoria.idcategoria %}active{% endif %}">
-                        {{ categoria.nome }}
-                    </a>
-                    {% endfor %}
+                <div class="card p-3">
+                    <h5>Categorias</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'forum' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Todas as Categorias
+                            <span class="badge bg-primary rounded-pill">{{ topicos.count }}</span>
+                        </a>
+                        {% for categoria in categorias %}
+                        <a href="{% url 'forum' %}?categoria={{ categoria.idcategoria }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            {{ categoria.nome }}
+                            <span class="badge bg-primary rounded-pill">{{ categoria.topico_set.count }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 
-            <!-- Main Forum Content -->
+            <!-- Forum Content -->
             <div class="col-lg-9">
-                <!-- Search Bar -->
-                <div class="card mb-4">
+                <!-- Search and Filter -->
+                <div class="card p-3 mb-4">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <form method="GET" class="input-group">
+                                <input type="text" name="busca" class="form-control" placeholder="Buscar tópicos..." value="{{ request.GET.busca }}">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" onchange="location = this.value;">
+                                <option value="?ordenar=recentes" {% if not request.GET.ordenar or request.GET.ordenar == 'recentes' %}selected{% endif %}>Mais Recentes</option>
+                                <option value="?ordenar=antigos" {% if request.GET.ordenar == 'antigos' %}selected{% endif %}>Mais Antigos</option>
+                                <option value="?ordenar=comentados" {% if request.GET.ordenar == 'comentados' %}selected{% endif %}>Mais Comentados</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Topic List -->
+                {% for topico in topicos %}
+                <div class="card mb-3 topic-card">
                     <div class="card-body">
-                        <form method="GET" action="{% url 'forum' %}">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="busca" placeholder="Pesquisar no fórum..."
-                                    value="{{ termo_busca }}">
-                                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-                                {% if categoria_selecionada %}
-                                <input type="hidden" name="categoria" value="{{ categoria_selecionada.idcategoria }}">
-                                {% endif %}
-                                {% if ordenacao_selecionada %}
-                                <input type="hidden" name="ordenar" value="{{ ordenacao_selecionada }}">
-                                {% endif %}
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    {% if topico.usuario %}
+                                        {{ topico.usuario.nome.0|upper }}
+                                    {% else %}
+                                        A
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="card-title">
+                                    <a href="{% url 'topico_detail' topico.idtopico %}" class="text-decoration-none text-dark">
+                                        {{ topico.titulo }}
+                                    </a>
+                                </h5>
+                                <p class="card-text">{{ topico.enunciado|truncatewords:30 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-secondary me-1">{{ topico.categoria.nome }}</span>
+                                        <span class="text-muted"><i class="far fa-comment me-1"></i> {{ topico.postagem_set.count }} respostas</span>
+                                    </div>
+                                    <small class="text-muted">
+                                        Postado em {{ topico.data_inicio }}
+                                        {% if topico.usuario %}
+                                        por {{ topico.usuario.nome }}
+                                        {% endif %}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Nenhum tópico encontrado</h5>
+                        <p class="text-muted">Seja o primeiro a criar um tópico!</p>
+                        {% if user.is_authenticated %}
+                        <a href="#new-topic" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i> Criar Primeiro Tópico
+                        </a>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary">Fazer Login para Criar Tópico</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Novo Tópico Form -->
+                {% if user.is_authenticated %}
+                <div id="new-topic" class="card mt-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Criar Nova Receita</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- FORMULÁRIO CORRETO -->
+                        <form method="POST" action="{% url 'criar_topico' %}" enctype="multipart/form-data" id="recipeForm">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3">
+                                <label for="titulo" class="form-label">Título da Receita</label>
+                                <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Ex: Bolo de Cenoura Vegano" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="categorias" class="form-label">Categorias</label>
+                                <select class="form-select select-multiple" id="categorias" name="categorias" multiple required size="4">
+                                    {% for categoria in categorias %}
+                                    <option value="{{ categoria.idcategoria_receita }}">{{ categoria.nome_categoria }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted">Segure Ctrl (ou Cmd no Mac) para selecionar múltiplas categorias</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="ingredientes" class="form-label">Ingredientes</label>
+                                <textarea class="form-control" id="ingredientes" name="ingredientes" rows="4" placeholder="Liste os ingredientes, um por linha..." required></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="modo_preparo" class="form-label">Modo de Preparo</label>
+                                <textarea class="form-control" id="modo_preparo" name="modo_preparo" rows="4" placeholder="Descreva o passo a passo da receita..." required></textarea>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="tempo_preparo" class="form-label">Tempo de Preparo (minutos)</label>
+                                    <input type="number" class="form-control" id="tempo_preparo" name="tempo_preparo" min="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="porcoes" class="form-label">Rendimento (porções)</label>
+                                    <input type="number" class="form-control" id="porcoes" name="porcoes" min="1" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="imagem" class="form-label">Foto da Receita (opcional)</label>
+                                <input class="form-control" type="file" id="imagem" name="imagem" accept="image/*">
+                            </div>
+                            
+                            <!-- BOTÕES CORRETOS - não são modal-footer -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{% url 'forum' %}" class="btn btn-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-1"></i> Publicar Receita
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
-
-                <!-- Filtros Ativos -->
-                {% if termo_busca or categoria_selecionada %}
-                <div class="mb-3">
-                    <small class="text-muted">Filtros ativos:</small>
-                    {% if termo_busca %}
-                    <span class="badge bg-primary me-2">
-                        Busca: "{{ termo_busca }}"
-                        <a href="?{% if categoria_selecionada %}categoria={{ categoria_selecionada.idcategoria }}&{% endif %}{% if ordenacao_selecionada %}ordenar={{ ordenacao_selecionada }}{% endif %}"
-                            class="text-white text-decoration-none">×</a>
-                    </span>
-                    {% endif %}
-                    {% if categoria_selecionada %}
-                    <span class="badge bg-secondary me-2">
-                        Categoria: {{ categoria_selecionada.nome }}
-                        <a href="?{% if termo_busca %}busca={{ termo_busca }}&{% endif %}{% if ordenacao_selecionada %}ordenar={{ ordenacao_selecionada }}{% endif %}"
-                            class="text-white text-decoration-none">×</a>
-                    </span>
-                    {% endif %}
-                    <a href="{% url 'forum' %}" class="btn btn-sm btn-outline-secondary">Limpar filtros</a>
-                </div>
                 {% endif %}
-
-                <!-- Topics List -->
-                <div class="mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="section-title mb-0">
-                            {% if categoria_selecionada %}
-                            Tópicos em: {{ categoria_selecionada.nome }}
-                            {% else %}
-                            Tópicos Recentes
-                            {% endif %}
-                        </h3>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Ordenar por:
-                                {% if ordenacao_selecionada == 'recentes' %}Recentes
-                                {% elif ordenacao_selecionada == 'antigos' %}Mais Antigos
-                                {% elif ordenacao_selecionada == 'comentados' %}Mais Comentados
-                                {% endif %}
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li>
-                                    <a class="dropdown-item {% if ordenacao_selecionada == 'recentes' %}active{% endif %}"
-                                        href="?{% if categoria_selecionada %}categoria={{ categoria_selecionada.idcategoria }}&{% endif %}{% if termo_busca %}busca={{ termo_busca }}&{% endif %}ordenar=recentes">
-                                        Mais Recentes
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item {% if ordenacao_selecionada == 'antigos' %}active{% endif %}"
-                                        href="?{% if categoria_selecionada %}categoria={{ categoria_selecionada.idcategoria }}&{% endif %}{% if termo_busca %}busca={{ termo_busca }}&{% endif %}ordenar=antigos">
-                                        Mais Antigos
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item {% if ordenacao_selecionada == 'comentados' %}active{% endif %}"
-                                        href="?{% if categoria_selecionada %}categoria={{ categoria_selecionada.idcategoria }}&{% endif %}{% if termo_busca %}busca={{ termo_busca }}&{% endif %}ordenar=comentados">
-                                        Mais Comentados
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    {% for topico in topicos %}
-                    <div class="topic-card card mb-3">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="flex-grow-1 me-3">
-                                    <span class="topic-badge mb-2 d-inline-block">
-                                        {{ topico.categoria.nome }}
-                                    </span>
-                                    <h4>
-                                        <a href="{% url 'topico_detail' topico.idtopico %}"
-                                            class="text-decoration-none">{{ topico.titulo }}</a>
-                                    </h4>
-                                    <p class="mb-2">{{ topico.enunciado }}</p>
-                                    <div class="topic-stats">
-                                        <span class="me-3"><i class="fas fa-clock"></i> {{ topico.data_inicio }}</span>
-                                        <span class="me-3"><i class="fas fa-comment"></i>
-                                            {{ topico.postagem_set.count }} resposta{{ topico.postagem_set.count|pluralize }}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                    <i class="fas fa-user-circle fa-2x text-primary"></i>
-                                    <div class="small mt-1">
-                                        {% if topico.usuario %}
-                                        {{ topico.usuario.nome }}
-                                        {% else %}
-                                        Autor
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div class="alert alert-warning">
-                        <strong>
-                            {% if categoria_selecionada %}
-                            Nenhum tópico encontrado na categoria "{{ categoria_selecionada.nome }}".
-                            {% elif termo_busca %}
-                            Nenhum tópico encontrado para "{{ termo_busca }}".
-                            {% else %}
-                            Nenhum tópico encontrado!
-                            {% endif %}
-                        </strong>
-                        Seja o primeiro a criar um tópico{% if categoria_selecionada %} nesta categoria{% endif %}
-                        usando o formulário abaixo.
-                    </div>
-                    {% endfor %}
-
-                </div>
-
-                <!-- New Topic Form -->
-                <div id="new-topic" class="comment-form mb-5">
-                    <h3 class="section-title mb-4">Criar Novo Tópico</h3>
-                    <form method="POST" action="{% url 'criar_topico' %}">
-                        {% csrf_token %}
-
-                        <!-- Mensagens de sucesso/erro -->
-                        {% if messages %}
-                        <div class="mb-4">
-                            {% for message in messages %}
-                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show"
-                                role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-
-                        <div class="mb-3">
-                            <label for="topic-title" class="form-label">Título do Tópico</label>
-                            <input type="text" class="form-control" id="topic-title" name="titulo"
-                                placeholder="Digite um título claro para seu tópico" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="topic-category" class="form-label">Categoria</label>
-                            <select class="form-select" id="topic-category" name="categoria" required>
-                                <option value="" selected disabled>Selecione uma categoria</option>
-                                {% for categoria in categorias %}
-                                <option value="{{ categoria.idcategoria }}">{{ categoria.nome }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="topic-content" class="form-label">Conteúdo</label>
-                            <textarea class="form-control" id="topic-content" name="conteudo" rows="5"
-                                placeholder="Descreva sua dúvida, experiência ou compartilhe sua receita..."
-                                required></textarea>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="notify-me" name="notificar">
-                                <label class="form-check-label" for="notify-me">
-                                    Notificar-me sobre respostas
-                                </label>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Publicar Tópico</button>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <!-- Footer -->
-    <footer>
+    <footer class="footer py-4 mt-5">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <h3 class="kids-font">NutriKids</h3>
-                    <p class="mt-3">Ajudando famílias a criarem refeições seguras e deliciosas para crianças com
-                        alergias alimentares.</p>
-                    <div class="mt-4">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-pinterest"></i></a>
-                    </div>
+                <div class="col-md-4 mb-3">
+                    <h5>NutriKids</h5>
+                    <p>Ajudando famílias com crianças com alergias alimentares.</p>
                 </div>
-                <div class="col-lg-2 col-md-4 mb-4">
+                <div class="col-md-2 mb-3">
                     <h5>Links</h5>
-                    <div class="footer-links mt-3">
-                        <a href="{% url 'index' %}">Início</a>
-                        <a href="{% url 'receita_list' %}">Receitas</a>
-                        <a href="{% url 'forum' %}">Fórum</a>
-                        <a href="{% url 'perfil' %}">Meu Perfil</a>
-                    </div>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'index' %}" class="text-white">Início</a></li>
+                        <li><a href="{% url 'receita_list' %}" class="text-white">Receitas</a></li>
+                        <li><a href="{% url 'forum' %}" class="text-white">Fórum</a></li>
+                    </ul>
                 </div>
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5>Suporte</h5>
-                    <div class="footer-links mt-3">
-                        <a href="#">Contato</a>
-                        <a href="#">FAQ</a>
-                        <a href="#">Política de Privacidade</a>
-                        <a href="#">Termos de Uso</a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 mb-4">
-                    <h5>Contato</h5>
-                    <div class="footer-links mt-3">
-                        <a href="#"><i class="fas fa-envelope me-2"></i>contato@nutrikids.com</a>
-                        <a href="#"><i class="fas fa-phone me-2"></i>(11) 98765-4321</a>
-                        <a href="#"><i class="fas fa-map-marker-alt me-2"></i>São Paulo, Brasil</a>
-                    </div>
+                <div class="col-md-3 mb-3">
+                    <h5>Categorias</h5>
+                    <ul class="list-unstyled">
+                        {% for categoria in categorias|slice:":4" %}
+                        <li><a href="{% url 'forum' %}?categoria={{ categoria.idcategoria }}" class="text-white">{{ categoria.nome }}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
-            <hr class="mt-4 bg-secondary">
-            <div class="text-center pt-3">
+            <hr class="my-4 bg-light">
+            <div class="text-center">
                 <p class="mb-0">&copy; 2023 NutriKids. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

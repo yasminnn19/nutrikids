@@ -5,7 +5,7 @@ class ReceitaForm(forms.ModelForm):
     class Meta:
         model = Receita
         fields = ['titulo', 'modo_preparo', 'ingredientes', 'porcoes', 
-                 'categoria_receita', 'imagem', 'tempo_preparo']
+                 'categorias_receita', 'imagem', 'tempo_preparo']
         widgets = {
             'titulo': forms.TextInput(attrs={
                 'class': 'form-control', 

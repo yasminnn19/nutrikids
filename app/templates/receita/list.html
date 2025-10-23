@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -14,6 +13,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{%static 'css/forum.css' %}"">
     <style>
+        .select-multiple {
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+        }
+
+        .select-multiple:focus {
+            border-color: #45a049;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+
+        .select-hint {
+            background-color: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
                 /* .clear-search-btn:hover {
             transform: scale(1.1) rotate(90deg);
             box-shadow: 0 4px 12px rgba(220, 53, 69, 0.5);
@@ -307,13 +324,15 @@
                         <a class="nav-link" href="/">Início</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/receita/">Receitas</a>
+                        <a class="nav-link active" href="{% url 'receita_list' %}">Receitas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/forum/">Fórum</a>
+                        <a class="nav-link" href="{% url 'forum' %}">Fórum</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/favoritos/">Favoritos</a>
+                        <a class="nav-link" href="{% url 'favoritos_list' %}">
+                            <i class="fas fa-heart me-1"></i>Favoritos
+                        </a>
                     </li>
                 </ul>
                 <div class="ms-lg-3 mt-3 mt-lg-0">
@@ -329,12 +348,12 @@
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             {% if user.is_authenticated %}
                                 <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
-                                <li><a class="dropdown-item" href="/favoritos/"><i class="fas fa-heart me-2"></i>Favoritos</a></li>
+                                <li><a class="dropdown-item" href="{% url 'favoritos_list' %}"><i class="fas fa-heart me-2"></i>Favoritos</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configurações</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/logout/"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
                             {% else %}
-                                <li><a class="dropdown-item" href="/login/"><i class="fas fa-sign-in-alt me-2"></i>Entrar</a></li>
+                                <li><a class="dropdown-item" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-2"></i>Entrar</a></li>
                             {% endif %}
                         </ul>
                     </div>
@@ -427,63 +446,50 @@
         </section>
 
         <!-- Recipes Grid -->
-        <section>
-            <div class="row">
-                {% for receita in receitas %}
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="recipe-card">
-                        <div class="recipe-img-container">
-                            {% if receita.imagem %}
-                                <img src="{{ receita.imagem.url }}" class="recipe-img" alt="{{ receita.titulo }}">
-                            {% else %}
-                                <img src="https://assets.unileversolutions.com/recipes-v2/35815.jpg" class="recipe-img" alt="{{ receita.titulo }}">
-                            {% endif %}
-                            <span class="recipe-badge"><i class="fas fa-check-circle me-1"></i>{{ receita.categoria_receita.nome_categoria }}</span>
+
+    <section>
+        <div class="row">
+            {% for receita in receitas %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="recipe-card">
+                    <div class="recipe-img-container">
+                        {% if receita.imagem %}
+                            <img src="{{ receita.imagem.url }}" class="recipe-img" alt="{{ receita.titulo }}">
+                        {% else %}
+                            <img src="https://assets.unileversolutions.com/recipes-v2/35815.jpg" class="recipe-img" alt="{{ receita.titulo }}">
+                        {% endif %}
+                        <span class="recipe-badge"><i class="fas fa-check-circle me-1"></i>{{ receita.categoria_receita.nome_categoria }}</span>
+                    </div>
+                    <div class="card-body">
+                        <span class="recipe-difficulty difficulty-{{ receita.dificuldade }}">
+                            <i class="fas fa-star"></i> 
+                            {% if receita.dificuldade == 'facil' %}Fácil
+                            {% elif receita.dificuldade == 'medio' %}Médio
+                            {% else %}Difícil{% endif %}
+                        </span>
+                        <h4>{{ receita.titulo }}</h4>
+                        <p class="card-text">{{ receita.ingredientes|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="recipe-meta"><i class="fas fa-clock"></i> {{ receita.tempo_preparo }} min</span>
+                            <span class="recipe-meta"><i class="fas fa-utensils"></i> {{ receita.porcoes }} porções</span>
+                            <span class="recipe-meta"><i class="fas fa-heart"></i> 124</span>
                         </div>
-                        <div class="card-body">
-                            <span class="recipe-difficulty difficulty-{{ receita.dificuldade }}">
-                                <i class="fas fa-star"></i> 
-                                {% if receita.dificuldade == 'facil' %}Fácil
-                                {% elif receita.dificuldade == 'medio' %}Médio
-                                {% else %}Difícil{% endif %}
-                            </span>
-                            <h4>{{ receita.titulo }}</h4>
-                            <p class="card-text">{{ receita.ingredientes|truncatewords:20 }}</p>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="recipe-meta"><i class="fas fa-clock"></i> {{ receita.tempo_preparo }} min</span>
-                                <span class="recipe-meta"><i class="fas fa-utensils"></i> {{ receita.porcoes }} porções</span>
-                                <span class="recipe-meta"><i class="fas fa-heart"></i> 124</span>
-                            </div>
-                            <a href="/receita/{{ receita.idreceita }}/" class="btn btn-primary mt-2">Ver Receita</a>
-                            
-                        </div>
+                        <!-- LINK CORRETO AQUI -->
+                        <a href="{% url 'receita_detail' receita.idreceita %}" class="btn btn-primary mt-2">Ver Receita</a>
+                        
                     </div>
                 </div>
-                {% empty %}
-                <div class="col-12">
-                    <div class="alert alert-info text-center">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Nenhuma receita encontrada. Seja o primeiro a publicar uma receita!
-                    </div>
-                </div>
-                {% endfor %}
             </div>
-            
-            <!-- Pagination -->
-            <!-- <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Próxima</a>
-                    </li>
-                </ul>
-            </nav> -->
-        </section>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Nenhuma receita encontrada. Seja o primeiro a publicar uma receita!
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
     </main>
 
     <!-- Submit Recipe Button -->
@@ -502,7 +508,8 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="recipeForm" method="post" action="/receita/criar/" enctype="multipart/form-data">
+                    <!-- ⚠️ IMPORTANTE: Você precisa criar a view 'criar_receita' ou usar uma URL existente -->
+                    <form id="recipeForm" method="post" action="/receitas/criar/" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="recipeTitle" class="form-label">Título da Receita</label>
@@ -536,14 +543,17 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label for="recipeCategory" class="form-label">Categoria</label>
-                            <select class="form-select" id="recipeCategory" name="categoria_receita" required>
-                                <option value="" selected disabled>Selecione uma categoria...</option>
-                                {% for categoria in categorias %}
-                                <option value="{{ categoria.idcategoria_receita }}">{{ categoria.nome_categoria }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                        <label for="recipeCategory" class="form-label">Categorias</label>
+                        <select class="form-select" id="recipeCategory" name="categorias" multiple required size="5">
+                            {% for categoria in categorias %}
+                            <option value="{{ categoria.idcategoria_receita }}">{{ categoria.nome_categoria }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Segure <kbd>Ctrl</kbd> (Windows) ou <kbd>Cmd</kbd> (Mac) para selecionar múltiplas categorias
+                        </small>
+                         </div>
                         
                         <div class="mb-3">
                             <label for="recipeIngredients" class="form-label">Ingredientes</label>
@@ -582,9 +592,9 @@
                     <h5>Links Rápidos</h5>
                     <div class="footer-links mt-3">
                         <a href="/">Início</a>
-                        <a href="/receita/">Receitas</a>
-                        <a href="/forum/">Fórum</a>
-                        <a href="/alergias/">Minhas Alergias</a>
+                        <a href="{% url 'receita_list' %}">Receitas</a>
+                        <a href="{% url 'forum' %}">Fórum</a>
+                        <a href="{% url 'minhas_alergias' %}">Minhas Alergias</a>
                     </div>
                 </div>
                 <div class="col-lg-4 mb-4">
@@ -639,7 +649,8 @@
             
             const formData = new FormData(this);
             
-            fetch('/receita/criar/', {
+            // ⚠️ ATENÇÃO: Você precisa criar esta URL no urls.py
+            fetch("/receitas/criar/", {
                 method: 'POST',
                 body: formData,
                 headers: {
