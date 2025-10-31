@@ -166,19 +166,33 @@ class Postagem(models.Model):
 
 
 class Receita(models.Model):
+    
+    DIFICULDADE_CHOICES = [
+        ('F', 'Fácil'),
+        ('M', 'Médio'),
+        ('D', 'Difícil'),
+    ]
+
     idreceita = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=45)
-    modo_preparo = models.TextField(max_length=255)
-    ingredientes = models.TextField(max_length=255)
+    modo_preparo = models.TextField(max_length=1000)
+    ingredientes = models.TextField(max_length=1000)
     porcoes = models.IntegerField()
-    # MUDAR: de ForeignKey para ManyToManyField
     categorias_receita = models.ManyToManyField(CategoriaReceita)
     imagem = models.ImageField(upload_to='receitas/', null=True, blank=True)
     tempo_preparo = models.IntegerField(default=0, help_text="Tempo em minutos")
+    dificuldade = models.CharField(
+        max_length=1,
+        choices=DIFICULDADE_CHOICES,
+        default='F',
+        help_text="Nível de dificuldade da receita"
+    )
+    
+    # ⭐⭐ ADICIONE ESTE CAMPO ⭐⭐
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self):
         return self.titulo
-
 
 class ReceitaHasIngrediente(models.Model):
     id_visualizar_ingrediente = models.AutoField(primary_key=True)

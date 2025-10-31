@@ -1,0 +1,199 @@
+<!-- templates/receita/criar_receita.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Criar Receita - NutriKids{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Cabeçalho -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-primary kids-font">Criar Nova Receita</h1>
+                <p class="lead text-muted">Compartilhe suas receitas deliciosas e seguras para alergias alimentares</p>
+            </div>
+
+            <!-- Formulário -->
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0"><i class="fas fa-utensils me-2"></i>Informações da Receita</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{% url 'criar_receita' %}" enctype="multipart/form-data" id="recipeForm">
+                        {% csrf_token %}
+                        
+                        <!-- Mensagens -->
+                        {% if messages %}
+                        <div class="mb-4">
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Título -->
+                        <div class="mb-4">
+                            <label for="titulo" class="form-label fw-semibold">Título da Receita *</label>
+                            <input type="text" class="form-control form-control-lg" id="titulo" name="titulo" 
+                                   placeholder="Ex: Bolo de Cenoura Vegano" required>
+                        </div>
+                        
+                        <!-- Categorias -->
+                        <div class="mb-4">
+                            <label for="categorias" class="form-label fw-semibold">Categorias *</label>
+                            <select class="form-select form-select-lg select-multiple" id="categorias" name="categorias" multiple required size="5">
+                                {% for categoria in categorias %}
+                                <option value="{{ categoria.idcategoria_receita }}">{{ categoria.nome_categoria }}</option>
+                                {% empty %}
+                                <option disabled>Nenhuma categoria disponível</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Segure <kbd>Ctrl</kbd> (Windows) ou <kbd>Cmd</kbd> (Mac) para selecionar múltiplas categorias
+                            </div>
+                        </div>
+                        
+                        <!-- Ingredientes -->
+                        <div class="mb-4">
+                            <label for="ingredientes" class="form-label fw-semibold">Ingredientes *</label>
+                            <textarea class="form-control" id="ingredientes" name="ingredientes" rows="6" 
+                                      placeholder="Liste os ingredientes, um por linha...
+Ex:
+- 2 xícaras de farinha de arroz
+- 1 xícara de açúcar mascavo
+- 3 ovos
+- 1/2 xícara de óleo" required></textarea>
+                        </div>
+                        
+                        <!-- Modo de Preparo -->
+                        <div class="mb-4">
+                            <label for="modo_preparo" class="form-label fw-semibold">Modo de Preparo *</label>
+                            <textarea class="form-control" id="modo_preparo" name="modo_preparo" rows="6" 
+                                placeholder="Descreva o passo a passo da receita...
+                                Ex:
+                                1. Pré-aqueça o forno a 180°C
+                                2. Misture todos os ingredientes secos
+                                3. Adicione os ingredientes líquidos..." required>
+                            </textarea>
+                        </div>
+
+                        <!-- Dificuldade -->
+                        <div class="mb-4">
+                            <label for="dificuldade" class="form-label fw-semibold">Dificuldade *</label>
+                            <select name="dificuldade" id="dificuldade" class="form-select form-select-lg" required>
+                                <option value="">Selecione...</option>
+                                <option value="F">Fácil</option>
+                                <option value="M">Médio</option>
+                                <option value="D">Difícil</option>
+                            </select>
+                        </div>
+
+                        <!-- Tempo e Porções -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="tempo_preparo" class="form-label fw-semibold">Tempo de Preparo (minutos) *</label>
+                                <input type="number" class="form-control" id="tempo_preparo" name="tempo_preparo" 
+                                       min="1" placeholder="Ex: 45" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="porcoes" class="form-label fw-semibold">Rendimento (porções) *</label>
+                                <input type="number" class="form-control" id="porcoes" name="porcoes" 
+                                       min="1" placeholder="Ex: 8" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Imagem -->
+                        <div class="mb-4">
+                            <label for="imagem" class="form-label fw-semibold">Foto da Receita (opcional)</label>
+                            <input class="form-control" type="file" id="imagem" name="imagem" accept="image/*">
+                        </div>
+                        
+                        <!-- Botões -->
+                        <div class="d-flex justify-content-between align-items-center pt-3">
+                            <a href="{% url 'receita_list' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i> Voltar
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i> Publicar Receita
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+#dificuldade {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+#dificuldade:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.select-multiple {
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+}
+
+.select-multiple:focus {
+    border-color: #45a049;
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.btn-lg {
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 10px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const recipeForm = document.getElementById('recipeForm');
+    
+    recipeForm.addEventListener('submit', function(e) {
+        const categorias = document.getElementById('categorias');
+        const selectedCategorias = Array.from(categorias.selectedOptions).map(option => option.value);
+        
+        if (selectedCategorias.length === 0) {
+            alert('Selecione pelo menos uma categoria!');
+            e.preventDefault();
+            return false;
+        }
+        
+        console.log('Enviando receita com categorias:', selectedCategorias);
+    });
+});
+</script>
+{% endblock %}

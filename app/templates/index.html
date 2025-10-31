@@ -1,290 +1,494 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriKids - Receitas seguras para crianças com alergias</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">
-                <span class="kids-font">Nutri</span>Kids
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav" style="flex: 1; display: flex; justify-content: flex-end;">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'index' %}">Início</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'receita_list' %}">Receitas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'forum' %}">Fórum</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'favoritos_list' %}">
-                            <i class="fas fa-heart me-1"></i>Favoritos
-                        </a>
-                    </li>
-                </ul>
-                <div class="ms-lg-3 mt-3 mt-lg-0">
-                    {% if user.is_authenticated %}
-                        <div class="dropdown">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-2"></i>
-                                {% if user.nome %}
-                                    {{ user.nome }}
-                                {% else %}
-                                    {{ user.username }}
-                                {% endif %}
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
-                                <li><a class="dropdown-item" href="/favoritos/"><i class="fas fa-heart me-2"></i>Favoritos</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
-                            </ul>
-                        </div>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
-                        <a href="{% url 'cadastro' %}" class="btn btn-primary">Cadastre-se</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <h1 class="hero-title kids-font">Receitas seguras para crianças com alergias</h1>
-            <p class="hero-subtitle">Encontre e compartilhe receitas deliciosas que eliminam os riscos para crianças com alergias alimentares</p>
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'receita_list' %}" class="btn btn-primary btn-lg">Explorar Receitas</a>
-                {% else %}
-                    <a href="{% url 'cadastro' %}" class="btn btn-primary btn-lg">Comece Agora</a>
-                    <a href="#features" class="btn btn-outline-light btn-lg">Saiba Mais</a>
-                {% endif %}
-            </div>
-        </div>
-    </section>
+{% block title %}
+NutriKids - Receitas seguras para crianças com alergias
+{% endblock %}
 
-    <!-- Allergies Section -->
-    <section class="py-5 bg-white">
-        <div class="container text-center">
-            <h4 class="mb-4">Filtramos receitas para alergias como:</h4>
-            <div>
-                <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Leite</span>
-                <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Ovos</span>
-                <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Amendoim</span>
-                <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Trigo</span>
-                <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Soja</span>
-                <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Peixe</span>
-                <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Frutos do mar</span>
-                <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Nozes</span>
-            </div>
+{% block content %}
+<!-- ==================== HERO SECTION ==================== -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="hero-title kids-font">Receitas seguras para crianças com alergias</h1>
+        <p class="hero-subtitle">
+            Encontre e compartilhe receitas deliciosas que eliminam os riscos para crianças com alergias alimentares
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            {% if user.is_authenticated %}
+                <a href="{% url 'receita_list' %}" class="btn btn-primary btn-lg">Explorar Receitas</a>
+            {% else %}
+                <a href="{% url 'cadastro' %}" class="btn btn-primary btn-lg">Comece Agora</a>
+                <a href="#features" class="btn btn-outline-light btn-lg">Saiba Mais</a>
+            {% endif %}
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Features Section -->
-    <section id="features" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center section-title">Como o NutriKids ajuda sua família</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="feature-card card bg-white text-center p-4">
-                        <div class="feature-icon">
-                            <i class="fas fa-filter"></i>
-                        </div>
-                        <h3>Filtro Inteligente</h3>
-                        <p>Receitas automaticamente filtradas de acordo com as alergias do seu filho, garantindo segurança em cada refeição.</p>
+<!-- ==================== ALLERGIES SECTION ==================== -->
+<section class="py-5 bg-white text-center">
+    <div class="container">
+        <h4 class="mb-4">Filtramos receitas para alergias como:</h4>
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+            <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Leite</span>
+            <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Ovos</span>
+            <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Amendoim</span>
+            <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Trigo</span>
+            <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Soja</span>
+            <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Peixe</span>
+            <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Frutos do mar</span>
+            <span class="allergy-badge"><i class="fas fa-times-circle me-2"></i>Nozes</span>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FEATURES SECTION ==================== -->
+<section id="features" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center section-title mb-5">Como o NutriKids ajuda sua família</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card card bg-white text-center p-4 h-100 shadow-sm">
+                    <div class="feature-icon mb-3 text-primary fs-2">
+                        <i class="fas fa-filter"></i>
                     </div>
+                    <h4 class="fw-bold mb-2">Filtro Inteligente</h4>
+                    <p>Receitas automaticamente filtradas de acordo com as alergias do seu filho, garantindo segurança em cada refeição.</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-card card bg-white text-center p-4">
-                        <div class="feature-icon">
-                            <i class="fas fa-utensils"></i>
-                        </div>
-                        <h3>Receitas Seguras</h3>
-                        <p>Banco de dados com centenas de receitas testadas e aprovadas por outras famílias com crianças alérgicas.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card card bg-white text-center p-4 h-100 shadow-sm">
+                    <div class="feature-icon mb-3 text-primary fs-2">
+                        <i class="fas fa-utensils"></i>
                     </div>
+                    <h4 class="fw-bold mb-2">Receitas Seguras</h4>
+                    <p>Banco de dados com receitas testadas e aprovadas por outras famílias com crianças alérgicas.</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-card card bg-white text-center p-4">
-                        <div class="feature-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <h3>Comunidade Apoiadora</h3>
-                        <p>Fórum exclusivo para compartilhar experiências, dicas e receitas com outros pais e cuidadores.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card card bg-white text-center p-4 h-100 shadow-sm">
+                    <div class="feature-icon mb-3 text-primary fs-2">
+                        <i class="fas fa-users"></i>
                     </div>
+                    <h4 class="fw-bold mb-2">Comunidade Apoiadora</h4>
+                    <p>Compartilhe experiências e dicas com outros pais e cuidadores no fórum do NutriKids.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Popular Recipes -->
-    <section id="recipes" class="py-5 bg-white">
-        <div class="container">
-            <h2 class="text-center section-title">Receitas Populares</h2>
-            <div class="row">
-                {% for receita in receitas|slice:":3" %}
-                <div class="col-md-4">
-                    <div class="recipe-card card">
-                        <div class="position-relative" style="height: 200px; overflow: hidden;">
-                            {% if receita.imagem %}
-                                <img src="{{ receita.imagem.url }}" class="recipe-img" alt="{{ receita.titulo }}">
+<!-- ==================== RECENT RECIPES ==================== -->
+<section id="recent-recipes" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center section-title mb-5">Receitas Recentes</h2>
+        <div class="row g-4">
+            {% for receita in receitas_recentes %}
+            <div class="col-md-4">
+                <div class="recipe-card card shadow-sm h-100">
+                    <div class="position-relative" style="height: 200px; overflow: hidden;">
+                        {% if receita.imagem %}
+                            <img src="{{ receita.imagem.url }}" class="recipe-img" alt="{{ receita.titulo }}"
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                 class="recipe-img" alt="{{ receita.titulo }}"
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        {% endif %}
+                        <span class="recipe-badge bg-primary text-white px-3 py-1 position-absolute top-0 end-0 m-2 rounded-pill small shadow-sm">
+                            {% if receita.categorias_receita.first %}
+                                {{ receita.categorias_receita.first.nome_categoria }}
                             {% else %}
-                                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                                     class="recipe-img" alt="{{ receita.titulo }}">
+                                Sem Categoria
                             {% endif %}
-                            <span class="recipe-badge">{{ receita.categoria_receita.nome_categoria }}</span>
+                        </span>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title text-primary">{{ receita.titulo }}</h5>
+                            <p class="card-text text-muted small mb-3">{{ receita.modo_preparo|truncatewords:15 }}</p>
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ receita.titulo }}</h5>
-                            <p class="card-text">{{ receita.modo_preparo|truncatewords:15 }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span><i class="fas fa-clock me-2"></i>{{ receita.tempo_preparo }} min</span>
-                                <span><i class="fas fa-utensils me-2"></i>{{ receita.porcoes }} porções</span>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between text-muted small mb-2">
+                                <span><i class="fas fa-clock me-1"></i>{{ receita.tempo_preparo }} min</span>
+                                <span><i class="fas fa-utensils me-1"></i>{{ receita.porcoes }} porções</span>
                             </div>
-                            <a href="{% url 'receita_detail' receita.idreceita %}" class="btn btn-primary btn-sm mt-2">Ver Receita</a>
+                            <a href="{% url 'receita_detail' receita.idreceita %}" class="btn btn-primary w-100">Ver Receita</a>
                         </div>
                     </div>
                 </div>
-                {% empty %}
-                <div class="col-12 text-center">
-                    <p>Nenhuma receita disponível no momento.</p>
-                </div>
-                {% endfor %}
             </div>
-            <div class="text-center mt-4">
-                <a href="{% url 'receita_list' %}" class="btn btn-primary">Ver Todas as Receitas</a>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">Nenhuma receita disponível.</p>
             </div>
+            {% endfor %}
         </div>
-    </section>
+        <div class="text-center mt-5">
+            <a href="{% url 'receita_list' %}?ordenar=recentes" class="btn btn-outline-primary">Ver Todas as Receitas</a>
+        </div>
+    </div>
+</section>
 
-    <!-- Forum Preview -->
-    <section id="forum" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center section-title">Comunidade NutriKids</h2>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="testimonial-card mb-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="https://randomuser.me/api/portraits/women/32.jpg" class="testimonial-img me-3" alt="Mãe">
-                            <div>
-                                <h5 class="mb-0">Ana Clara</h5>
-                                <small class="text-muted">Mãe do Lucas (alérgico a amendoim)</small>
+<!-- ==================== LATEST FORUM TOPICS ==================== -->
+<section id="forum-topics" class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center section-title">Últimos Tópicos do Fórum</h2>
+        <p class="text-center text-muted mb-4">Participe das discussões mais recentes da nossa comunidade</p>
+        <div class="row">
+            {% for topico in ultimos_topicos %}
+            <div class="col-md-4">
+                <div class="topic-card card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="user-avatar me-3">
+                                {% if topico.usuario and topico.usuario.nome %}
+                                    {{ topico.usuario.nome.0|upper }}
+                                {% else %}
+                                    U
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1">
+                                    <a href="{% url 'topico_detail' topico.idtopico %}" class="text-decoration-none text-dark">
+                                        {{ topico.titulo }}
+                                    </a>
+                                </h5>
+                                <small class="text-muted">
+                                    por 
+                                    {% if topico.usuario and topico.usuario.nome %}
+                                        {{ topico.usuario.nome }}
+                                    {% else %}
+                                        Usuário
+                                    {% endif %}
+                                </small>
                             </div>
                         </div>
-                        <p>"O NutriKids mudou nossa vida! Finalmente encontro receitas seguras para meu filho e posso conversar com outras mães que passam pelos mesmos desafios."</p>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="testimonial-card mb-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="https://randomuser.me/api/portraits/men/45.jpg" class="testimonial-img me-3" alt="Pai">
-                            <div>
-                                <h5 class="mb-0">Carlos Eduardo</h5>
-                                <small class="text-muted">Pai da Sofia (alérgica a leite e ovo)</small>
-                            </div>
+                        <p class="card-text text-muted mb-3">
+                            {{ topico.enunciado|truncatewords:15 }}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-warning text-dark">{{ topico.categoria.nome }}</span>
+                            <small class="text-muted">
+                                <i class="far fa-comment me-1"></i>{{ topico.postagem_set.count }}
+                            </small>
                         </div>
-                        <p>"A função de substituição de ingredientes é incrível! Consigo adaptar qualquer receita para atender às necessidades da minha filha sem perder o sabor."</p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <small class="text-muted">
+                            <i class="far fa-clock me-1"></i>{{ topico.data_inicio }}
+                        </small>
                     </div>
                 </div>
             </div>
-            <div class="text-center mt-3">
-                <a href="{% url 'forum' %}" class="btn btn-primary">Participe do Nosso Fórum</a>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="card">
+                    <div class="card-body py-5">
+                        <i class="fas fa-comments fa-2x text-muted mb-3"></i>
+                        <p class="text-muted mb-0">Ainda não há tópicos no fórum.</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'forum' %}" class="btn btn-primary">Ver Todos os Tópicos</a>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SOBRE NÓS SECTION ==================== -->
+<section class="about-section">
+    <div class="container">
+        <div class="about-content">
+            <h2 class="about-title">Sobre Nós</h2>
+            <p class="about-text">
+                Somos Yasmin Goulart, Felipe Botelho e Enzo Henrique, técnicos em informática e apaixonados por tecnologia aplicada à vida real. Criamos este site inspirado nas dificuldades que nossos familiares enfrentam com alergias alimentares em crianças. Nosso objetivo é oferecer informações, receitas e dicas seguras para tornar o dia a dia mais tranquilo e saudável, combinando cuidado e inovação.
+            </p>
+            
+            <div class="team-members">
+                <!-- Yasmin com foto -->
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <img src="https://i.ibb.co/fVkdBPB3/yasmin.jpg" alt="Yasmin Goulart" class="member-photo" onerror="this.style.display='none'">
+                    </div>
+                    <h4 class="member-name">Yasmin Goulart</h4>
+                    <p class="member-role">Desenvolvedora</p>
+                </div>
+                
+                <!-- Felipe com placeholder -->
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <img src="https://i.ibb.co/SXwGj1mG/2.jpg" alt="Felibe Botelho" class="member-photo" onerror="this.style.display='none'">
+                    </div>
+                    <h4 class="member-name">Felipe Botelho</h4>
+                    <p class="member-role">Desenvolvedor</p>
+                </div>
+                
+                <!-- Enzo com placeholder -->
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <img src="https://i.ibb.co/KxJ2L108/3.jpg" alt="Enzo Henrique" class="member-photo" onerror="this.style.display='none'">
+                    </div>
+                    <h4 class="member-name">Enzo Henrique</h4>
+                    <p class="member-role">Desenvolvedor</p>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Newsletter -->
-    <section class="py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 text-center">
-                    <h2 class="mb-4">Receba Novas Receitas no Seu E-mail</h2>
-                    <p class="mb-4">Cadastre-se para receber semanalmente receitas seguras e dicas para lidar com alergias alimentares.</p>
-                    <form class="row g-2 justify-content-center">
-                        <div class="col-md-8">
-                            <input type="email" class="form-control newsletter-input" placeholder="Seu melhor e-mail" required>
-                        </div>
-                        <div class="col-md-4 col-6">
-                            <button type="submit" class="btn newsletter-btn w-100">Assinar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+{% endblock %}  {# Fecha o conteúdo principal #}
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <h3 class="kids-font">NutriKids</h3>
-                    <p class="mt-3">Ajudando famílias a criarem refeições seguras e deliciosas para crianças com alergias alimentares.</p>
-                    <div class="mt-4">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-pinterest"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5>Links Rápidos</h5>
-                    <div class="footer-links mt-3">
-                        <a href="{% url 'index' %}">Início</a>
-                        <a href="{% url 'receita_list' %}">Receitas</a>
-                        <a href="{% url 'forum' %}">Fórum</a>
-                        <a href="/favoritos/">Favoritos</a>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5>Suporte</h5>
-                    <div class="footer-links mt-3">
-                        <a href="#">Contato</a>
-                        <a href="#">FAQ</a>
-                        <a href="#">Política de Privacidade</a>
-                        <a href="#">Termos de Uso</a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 mb-4">
-                    <h5>Contato</h5>
-                    <div class="footer-links mt-3">
-                        <a href="#"><i class="fas fa-envelope me-2"></i>contato@nutrikids.com</a>
-                        <a href="#"><i class="fas fa-phone me-2"></i>(11) 98765-4321</a>
-                        <a href="#"><i class="fas fa-map-marker-alt me-2"></i>São Paulo, Brasil</a>
-                    </div>
-                </div>
-            </div>
-            <hr class="mt-4 bg-secondary">
-            <div class="text-center pt-3">
-                <p class="mb-0">&copy; 2023 NutriKids. Todos os direitos reservados.</p>
-            </div>
-        </div>
-    </footer>
+{% block extra_css %}
+<style>
+.hero-section {
+    background: linear-gradient(rgba(76, 175, 80, 0.9), rgba(76, 175, 80, 0.9)), 
+                url('https://static6.depositphotos.com/1014511/585/i/450/depositphotos_5855427-stock-photo-healthy-eating-frame.jpg') center/cover no-repeat !important;
+    color: white;
+    padding: 100px 20px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+}
+.hero-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+.allergy-badge {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-weight: 500;
+}
+.section-title {
+    font-weight: 700;
+    color: #333;
+}
+.feature-card, .recipe-card {
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-card:hover, .recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.testimonial-img {
+    object-fit: cover;
+}
+.newsletter-input {
+    border-radius: 8px;
+    border: none;
+    padding: 12px;
+}
+.newsletter-btn {
+    border-radius: 8px;
+    padding: 12px;
+}
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{% static 'js/main.js' %}"></script>
-</body>
-</html>
+/* ==================== SOBRE NÓS SECTION ==================== */
+.about-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-section::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234CAF50" opacity="0.1"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>') no-repeat;
+    background-size: contain;
+}
+
+.about-content {
+    position: relative;
+    z-index: 2;
+}
+
+.about-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c5530;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.about-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 2rem;
+    text-align: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.team-members {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.team-member {
+    text-align: center;
+    max-width: 200px;
+}
+
+.member-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4CAF50, #8BC34A);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.member-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.avatar-initial {
+    font-size: 2.5rem;
+    color: white;
+    font-weight: bold;
+}
+
+/* Fallback para quando a imagem não carrega */
+.member-avatar[data-initial]::before {
+    content: attr(data-initial);
+    position: absolute;
+    font-size: 2.5rem;
+    color: white;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.member-avatar:hover {
+    transform: scale(1.05);
+}
+
+.member-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.member-role {
+    color: #4CAF50;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.about-stats {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #4CAF50;
+    display: block;
+    line-height: 1;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .about-section {
+        padding: 60px 0;
+    }
+    
+    .about-title {
+        font-size: 2rem;
+    }
+    
+    .about-text {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .team-members {
+        gap: 1.5rem;
+    }
+    
+    .member-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .avatar-initial {
+        font-size: 2rem;
+    }
+    
+    .about-stats {
+        gap: 2rem;
+        margin-top: 3rem;
+        padding-top: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .team-members {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
+    
+    .team-member {
+        max-width: 100%;
+    }
+    
+    .about-stats {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}
+</style>
+{% endblock %}

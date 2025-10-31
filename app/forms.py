@@ -2,6 +2,14 @@ from django import forms
 from .models import Receita, CategoriaReceita
 
 class ReceitaForm(forms.ModelForm):
+    # Adicionar explicitamente o campo ManyToMany
+    categorias_receita = forms.ModelMultipleChoiceField(
+    queryset=CategoriaReceita.objects.all(),
+    widget=forms.SelectMultiple(attrs={'class': 'form-select'}),  # Select múltiplo
+    required=True,
+    label="Categorias"
+)
+    
     class Meta:
         model = Receita
         fields = ['titulo', 'modo_preparo', 'ingredientes', 'porcoes', 
@@ -22,6 +30,5 @@ class ReceitaForm(forms.ModelForm):
                 'placeholder': 'Ingredientes, um por linha'
             }),
             'porcoes': forms.NumberInput(attrs={'class': 'form-control'}),
-            'categoria_receita': forms.Select(attrs={'class': 'form-select'}),
             'tempo_preparo': forms.NumberInput(attrs={'class': 'form-control'}),
         }

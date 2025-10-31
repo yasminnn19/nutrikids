@@ -1,81 +1,230 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ receita.titulo }} - NutriKids</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{%static 'css/style.css' %}">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <span style="font-family: 'Comic Sans MS';">Nutri</span>Kids
-            </a>
-           <a href="{% url 'receita_list' %}" class="btn btn-outline-secondary">Voltar</a>
-        </div>
-    </nav>
+{% block title %}{{ receita.titulo }} - NutriKids{% endblock %}
 
-    <div class="container mt-4">
-        <h1>{{ receita.titulo }}</h1>
-                <!-- Adicione este botão perto do título da receita: -->
-        {% if user.is_authenticated %}
-        <form method="POST" action="{% url 'add_favorito' receita.idreceita %}" class="d-inline">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-warning">
-                <i class="fas fa-heart me-1"></i>Adicionar aos Favoritos
-            </button>
-        </form>
-        <br>
-        {% else %}
-        <a href="{% url 'login' %}" class="btn btn-outline-warning">
-            <i class="fas fa-heart me-1"></i>Favoritar
+{% block content %}
+
+<!-- Mensagens -->
+<div class="container mt-4">
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <i class="fas 
+                {% if message.tags == 'success' %}fa-check-circle
+                {% elif message.tags == 'error' %}fa-exclamation-circle
+                {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                {% elif message.tags == 'info' %}fa-info-circle
+                {% else %}fa-bell{% endif %} 
+                me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<div class="container mt-4">
+    <!-- Botão Voltar -->
+    <div class="mb-4">
+        <a href="{% url 'receita_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Voltar para Receitas
         </a>
-        {% endif %}
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>📋 Informações</h5>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Categoria:</strong> {{ receita.categoria_receita.nome_categoria }}</p>
-                        <p><strong>Porções:</strong> {{ receita.porcoes }}</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>🥗 Ingredientes</h5>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            {% for ingrediente in ingredientes %}
-                            <li class="list-group-item">
-                                {{ ingrediente.quantidade }} {{ ingrediente.unidade }} de 
-                                {{ ingrediente.ingrediente.nome }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
 
-        <div class="card mt-4">
-            <div class="card-header">
-                <h5>👩‍🍳 Modo de Preparo</h5>
-            </div>
-            <div class="card-body">
-                <p>{{ receita.modo_preparo|linebreaks }}</p>
+    <!-- Cabeçalho da Receita -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h1 class="display-5 fw-bold text-primary">{{ receita.titulo }}</h1>
+                    <br>
+                </div>
+                
+                <!-- Botão Favoritar -->
+                {% if user.is_authenticated %}
+                <form method="POST" action="{% url 'add_favorito' receita.idreceita %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning btn-lg">
+                        <i class="fas fa-heart me-2"></i>Favoritar
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-warning btn-lg">
+                    <i class="fas fa-heart me-2"></i>Favoritar
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- Imagem da Receita -->
+    {% if receita.imagem %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="text-center">
+                <img src="{{ receita.imagem.url }}" alt="{{ receita.titulo }}" 
+                     class="img-fluid rounded-3 shadow" style="max-height: 400px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Conteúdo Principal -->
+    <div class="row">
+        <!-- Coluna da Esquerda - Informações -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informações</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong><i class="fas fa-tags me-2 text-primary"></i>Categorias:</strong>
+                        <div class="mt-2">
+                            {% for categoria in receita.categorias_receita.all %}
+                            <span class="badge bg-success me-1 mb-1">{{ categoria.nome_categoria }}</span>
+                            {% empty %}
+                            <span class="text-muted">Sem categorias</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong><i class="fas fa-clock me-2 text-primary"></i>Tempo de Preparo:</strong>
+                        <span class="ms-2">{{ receita.tempo_preparo }} minutos</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong><i class="fas fa-clock me-2 text-primary"></i>Dificuldade:</strong>
+                        <span class="ms-2">{{ receita.dificuldade }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong><i class="fas fa-utensils me-2 text-primary"></i>Porções:</strong>
+                        <span class="ms-2">{{ receita.porcoes }} porções</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna da Direita - Ingredientes -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-list-alt me-2"></i>Ingredientes</h5>
+                </div>
+                <div class="card-body">
+                    {% if ingredientes %}
+                    <div class="row">
+                        {% for ingrediente in ingredientes %}
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center p-3 border rounded-3 bg-light">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 text-dark">{{ ingrediente.ingrediente.nome }}</h6>
+                                    <small class="text-muted">
+                                        {{ ingrediente.quantidade }} {{ ingrediente.unidade }}
+                                    </small>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="fas fa-check-circle text-success fs-5"></i>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <!-- Mostrar ingredientes do campo texto se não houver ingredientes relacionados -->
+                    <div class="ingredientes-texto">
+                        {{ receita.ingredientes|linebreaks }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modo de Preparo -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 mb-5">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-mortar-pestle me-2"></i>Modo de Preparo</h5>
+                </div>
+                <div class="card-body">
+                    <div class="preparo-content">
+                        {{ receita.modo_preparo|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: none;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+.preparo-content, .ingredientes-texto {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-line;
+}
+
+.preparo-content p, .ingredientes-texto p {
+    margin-bottom: 1rem;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+    transition: all 0.3s ease;
+}
+
+.bg-light:hover {
+    background-color: #e9ecef !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #FFC107, #FF8F00);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #FF8F00, #FF6F00);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+.display-5 {
+    color: #2c5530;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.container {
+    padding-bottom: 3rem;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+</style>
+{% endblock %}
