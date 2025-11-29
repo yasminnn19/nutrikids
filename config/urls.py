@@ -21,7 +21,7 @@ urlpatterns = [
     
     # Receitas
     path('receitas/', views.receita_list, name='receita_list'),
-    path('receitas/criar/', views.criar_receita, name='criar_receita'),  # NOVO FORMULÁRIO
+    path('receitas/criar/', views.criar_receita, name='criar_receita'),
     path('receitas/<int:id>/', views.receita_detail, name='receita_detail'),
     
     # Fórum
@@ -38,6 +38,16 @@ urlpatterns = [
     path('favoritos/', views.favoritos_list, name='favoritos_list'),
     path('add-favorito/<int:receita_id>/', views.add_favorito, name='add_favorito'),
     path('remove-favorito/<int:favorito_id>/', views.remove_favorito, name='remove_favorito'),
+    
+    # =========================================================================
+    # NOVAS URLs PARA PÁGINAS REACT (sem duplicação de mensagens)
+    # =========================================================================
+    path('app/', views.react_app, name='react_app'),
+    path('receitas-react/', views.react_receitas, name='react_receitas'),
+    path('forum-react/', views.react_forum, name='react_forum'),
+    path('favoritos-react/', views.react_favoritos, name='react_favoritos'),
+    path('perfil-react/', views.react_perfil, name='react_perfil'),
+    path('alergias-react/', views.react_alergias, name='react_alergias'),
 ]
 
 # Serve arquivos de mídia durante o desenvolvimento

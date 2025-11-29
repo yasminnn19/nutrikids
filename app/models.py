@@ -145,13 +145,6 @@ class Forum(models.Model):
         return self.titulo
 
 
-class Ingrediente(models.Model):
-    idingrediente = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=100)
-    substituicoes_sugeridas = JSONField()
-    
-    def __str__(self):
-        return self.nome
 
 
 class Postagem(models.Model):
@@ -194,18 +187,6 @@ class Receita(models.Model):
     def __str__(self):
         return self.titulo
 
-class ReceitaHasIngrediente(models.Model):
-    id_visualizar_ingrediente = models.AutoField(primary_key=True)
-    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
-    ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
-    quantidade = models.CharField(max_length=45)
-    unidade = models.CharField(max_length=45)
-    
-    class Meta:
-        unique_together = (('receita', 'ingrediente'),)
-    
-    def __str__(self):
-        return f"{self.receita.titulo} - {self.ingrediente.nome}"
 
 
 class Topico(models.Model):

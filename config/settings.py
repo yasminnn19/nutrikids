@@ -63,6 +63,11 @@ DATABASES = {
     }
 }
 
+# settings.py
+from django.contrib.messages import constants as messages
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 # Configurações de autenticação
 AUTH_PASSWORD_VALIDATORS = [
     {
